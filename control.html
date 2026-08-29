@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREQ Producer Console • Fix v2</title>
+<title>FREQ Producer Console • v4</title>
 <style>
 :root{
   --bg:#06070a;--panel:#0e1117;--panel2:#121620;--line:#252b38;--line2:#30384a;
@@ -68,7 +68,7 @@ button:active{transform:translateY(0)}
 .introPreview:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 47%,rgba(83,108,255,.08) 50%,transparent 53%);animation:scan 5s linear infinite}
 .introPreview .k{font-size:10px;letter-spacing:3px;color:#7f8fff}.introPreview h3{font-size:38px;line-height:1;margin:42px 0 8px;letter-spacing:-2px}.introPreview h3 span{color:#6678ff}.introPreview .sub{font-size:13px;letter-spacing:2px;color:#a8afbd}.introPreview .detail{position:absolute;bottom:24px;left:26px;color:#697386;font-size:10px;letter-spacing:2px}
 @keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.rows{display:grid;gap:8px}.row{display:grid;grid-template-columns:50px 1.2fr 1.2fr 1fr 90px 86px;gap:7px;align-items:center;padding:8px;border:1px solid #262d39;background:#0d1016;border-radius:10px}
+.rows{display:grid;gap:8px}.cameraRows{display:grid;gap:8px}.cameraRow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;padding:10px;border:1px solid #262d39;background:#0d1016;border-radius:10px}.cameraRow b{font-size:11px;letter-spacing:.7px}.cameraHint{font-size:10px;color:#687386;margin-top:10px;line-height:1.5}.row{display:grid;grid-template-columns:50px 1.2fr 1.2fr 1fr 90px 86px;gap:7px;align-items:center;padding:8px;border:1px solid #262d39;background:#0d1016;border-radius:10px}
 .judge{grid-template-columns:50px 1fr 100px}.rank{display:grid;grid-template-columns:70px 1fr 120px;gap:7px;margin-bottom:7px}
 .toggleRow{display:flex;align-items:center;gap:10px}.toggle{appearance:none;width:42px;height:24px;border-radius:999px;background:#242a36;border:1px solid #343b49;position:relative;cursor:pointer}.toggle:after{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;border-radius:50%;background:#7e8798;transition:.18s}.toggle:checked{background:#4458d7;border-color:#6678ff}.toggle:checked:after{left:20px;background:white}
 @media(max-width:1100px){.layout{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid #202531}.switch{grid-template-columns:repeat(3,1fr)}.introPanel{grid-template-columns:1fr}}
@@ -127,6 +127,12 @@ button:active{transform:translateY(0)}
 <section class="card"><div class="head"><div><div class="eyebrow">CLOCK</div><h2>MASTER TIMER</h2></div><span id="timerState" class="muted">PAUSED</span></div><div class="body"><div class="timer"><div id="clock" class="readout">20:00</div><div class="actions"><button id="start" class="primary">START</button><button id="pause" class="ghost">PAUSE</button><button id="reset" class="ghost">RESET 20:00</button><button id="minus" class="ghost">−30s</button><button id="plus" class="ghost">+30s</button></div></div></div></section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">EVENT</div><h2>SHOW INFO</h2></div></div><div id="showFields" class="body grid3"></div></section>
+<section class="card"><div class="head"><div><div class="eyebrow">QUEUE</div><h2>UP NEXT</h2></div><button id="takeUpNext" class="ghost">TAKE UP NEXT SCENE</button></div>
+<div class="body grid3" id="upNextFields"></div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">REMOTE VIDEO</div><h2>CAMERA FEEDS</h2></div><span class="muted">Paste a VDO.Ninja viewer URL for each person</span></div>
+<div class="body" id="cameraFields"></div></section>
+
 <section class="card"><div class="head"><div><div class="eyebrow">TALENT</div><h2>CONTESTANTS</h2></div></div><div class="body rows" id="contestants"></div></section>
 <section class="card"><div class="head"><div><div class="eyebrow">PANEL</div><h2>JUDGES</h2></div></div><div class="body rows" id="judges"></div></section>
 <section class="card"><div class="head"><div><div class="eyebrow">RESULTS</div><h2>LEADERBOARD</h2></div><button id="sort" class="ghost">SORT FROM SCORES</button></div><div class="body" id="leaderboard"></div></section>
@@ -159,6 +165,21 @@ el('sideScenes').innerHTML=scenes.map((x,i)=>'<button class="sceneBtn '+(cur===x
 el('switcher').innerHTML=scenes.map(x=>'<button class="take '+(cur===x[0]?'on ':'')+(x[0]==='intro'?'intro':'')+'" data-scene="'+x[0]+'">'+x[1]+'</button>').join('');
 el('introFields').innerHTML=field('KICKER','intro.kicker')+field('HEADLINE','intro.title')+field('SUBTITLE','intro.subtitle')+field('DETAIL LINE','intro.detail');
 el('showFields').innerHTML=field('EVENT TITLE','eventTitle')+field('SEASON','season')+field('PRESENTED BY','presentedBy')+field('ROUND','round')+field('PHASE','phase')+field('CHALLENGE','challengeTitle')+field('DESCRIPTION','challengeDescription')+field('BPM','bpm','number')+field('KEY','key')+field('SAMPLE PACK','samplePack')+field('SAMPLE BY','sampleBy')+field('BRACKET','bracket');
+el('upNextFields').innerHTML=
+  field('SLOT','upNext.slot')+
+  field('NAME','upNext.name')+
+  field('HANDLE','upNext.handle')+
+  field('COUNTDOWN (SEC)','upNext.countdown','number')+
+  field('IMAGE URL','upNext.image')+
+  field('CAMERA URL','upNext.camUrl');
+
+const camPeople=[
+  ['HOST','host.camUrl'],
+  ...((draft.contestants||[]).map((c,i)=>['CONTESTANT '+(i+1)+' — '+(c.name||'TBD'),'contestants.'+i+'.camUrl'])),
+  ...((draft.judges||[]).map((j,i)=>['JUDGE '+(i+1)+' — '+(j.name||'TBD'),'judges.'+i+'.camUrl']))
+];
+el('cameraFields').innerHTML='<div class="cameraRows">'+camPeople.map(x=>'<div class="cameraRow"><b>'+esc(x[0])+'</b><input class="small" data-path="'+x[1]+'" placeholder="https://vdo.ninja/?view=..." value="'+esc(get(x[1]))+'"></div>').join('')+'</div><div class="cameraHint">Use viewer-only links. Camera audio is intentionally muted inside the graphic; route speaking audio separately in OBS/Discord if you want independent control.</div>';
+
 el('contestants').innerHTML=(draft.contestants||[]).map((c,i)=>'<div class="row"><span class="muted">#'+String(i+1).padStart(2,'0')+'</span><input class="small" data-ci="'+i+'" data-k="name" value="'+esc(c.name)+'"><input class="small" data-ci="'+i+'" data-k="handle" value="'+esc(c.handle)+'"><select class="small" data-ci="'+i+'" data-k="status"><option '+(c.status==='IN PROGRESS'?'selected':'')+'>IN PROGRESS</option><option '+(c.status==='WAITING'?'selected':'')+'>WAITING</option><option '+(c.status==='DONE'?'selected':'')+'>DONE</option><option '+(c.status==='ELIMINATED'?'selected':'')+'>ELIMINATED</option></select><input class="small" type="number" step=".1" data-ci="'+i+'" data-k="score" value="'+(c.score??'')+'"><button class="ghost" data-focus="'+(i+1)+'">FOCUS</button></div>').join('');
 el('judges').innerHTML=(draft.judges||[]).map((j,i)=>'<div class="row judge"><span class="muted">'+(i+1)+'</span><input class="small" data-ji="'+i+'" data-k="name" value="'+esc(j.name)+'"><input class="small" type="number" step=".1" min="0" max="10" data-ji="'+i+'" data-k="score" value="'+(j.score??'')+'"></div>').join('');
 el('leaderboard').innerHTML=(draft.leaderboard||[]).map((x,i)=>'<div class="rank"><input class="small" type="number" data-li="'+i+'" data-k="rank" value="'+(x.rank||i+1)+'"><input class="small" data-li="'+i+'" data-k="name" value="'+esc(x.name)+'"><input class="small" type="number" step=".1" data-li="'+i+'" data-k="score" value="'+(x.score??'')+'"></div>').join('');
@@ -188,7 +209,7 @@ el('logout').onclick=async()=>{try{await api({action:'logout'})}catch{}localStor
 el('push').onclick=()=>push().catch(e=>alert(e.message));
 el('goIntro').onclick=()=>take('intro');
 el('takeIntro').onclick=()=>take('intro');
-el('goFull').onclick=()=>take('full');
+el('goFull').onclick=()=>take('full');el('takeUpNext').onclick=()=>take('upnext');
 el('testIntroAudio').onclick=()=>cue('audio_test_intro');
 el('testTransitionAudio').onclick=()=>cue('audio_test_transition');
 el('start').onclick=()=>timer('start');el('pause').onclick=()=>timer('pause');el('reset').onclick=()=>timer('reset');el('minus').onclick=()=>timer('minus');el('plus').onclick=()=>timer('plus');
