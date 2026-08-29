@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREQ Overlay • v6</title>
+<title>FREQ Overlay • v7</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:#fff;font-family:Arial,Helvetica,sans-serif}.wrap{position:absolute;inset:0;display:grid;place-items:center}.stage{width:1920px;height:1080px;transform-origin:center;position:absolute;background:radial-gradient(circle at 75% 0,#17142b 0,transparent 30%),#06070a;overflow:hidden}.stage:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 0 44%,rgba(83,108,255,.08) 50%,transparent 56%);transform:translateX(-120%);animation:sheen 11s ease-in-out infinite}.top{height:92px;display:grid;grid-template-columns:1fr 520px 1fr;align-items:center;padding:0 30px;border-bottom:1px solid #1c2029;background:#090a0e}.logo{font-size:44px;font-weight:1000;letter-spacing:-4px}.logo i{font-style:normal;color:#536cff}.round{height:76px;border:1px solid #252a34;border-top:0;border-radius:0 0 22px 22px;display:flex;align-items:center;justify-content:center;gap:20px;font-weight:900;font-size:22px}.round b{color:#6076ff}.present{text-align:right;color:#9aa0af;font-size:12px}.present strong{color:#fff;font-size:18px;margin-left:10px}.scene{position:absolute;left:26px;right:26px;top:108px;bottom:72px;will-change:transform,opacity,filter}.scene.scene-out{animation:sceneOut .18s ease forwards}.scene.scene-in{animation:sceneIn .48s cubic-bezier(.16,1,.3,1) both}.scene.soft-refresh{animation:softRefresh .28s ease both}.grid{height:100%;display:grid;grid-template-columns:510px 550px 1fr;grid-template-rows:355px 340px 1fr;gap:12px}.panel{background:#0d0f13;border:1px solid #282d36;border-radius:10px;overflow:hidden;position:relative}.scene-in .panel{animation:panelIn .55s cubic-bezier(.16,1,.3,1) both}.scene-in .panel:nth-child(2){animation-delay:.04s}.scene-in .panel:nth-child(3){animation-delay:.08s}.scene-in .panel:nth-child(4){animation-delay:.12s}.scene-in .panel:nth-child(5){animation-delay:.16s}.scene-in .panel:nth-child(6){animation-delay:.20s}.title{font-size:11px;font-weight:900;letter-spacing:1.5px;padding:12px 14px}.title span{background:#3521cc;padding:7px 10px;border-radius:3px}.host{grid-column:1;grid-row:1}.challenge{grid-column:2;grid-row:1;padding:24px}.contestants{grid-column:3;grid-row:1}.judges{grid-column:1/3;grid-row:2}.side{grid-column:3;grid-row:2}.bottom{grid-column:1/4;grid-row:3;padding:20px 24px}.photo{height:285px;background:radial-gradient(circle at 50% 20%,#33275e,#13151c 45%,#090a0d 80%);background-size:cover;background-position:center}.meta{padding:12px 18px}.meta b{font-size:18px}.muted{color:#8f96a6;font-size:12px}.challenge h1{color:#6076ff;font-size:30px}.metrics{display:flex;gap:45px;margin-top:36px}.metric small{display:block;color:#8d94a4}.metric strong{font-size:25px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px}.c{border:1px solid #2b3039;border-radius:8px;overflow:hidden}.c .photo{height:180px}.c .meta{padding:9px}.c b{font-size:14px}.status{color:#6076ff;font-size:10px;font-weight:900;margin-top:9px}.judgeGrid{display:grid;grid-template-columns:repeat(4,1fr);height:calc(100% - 40px)}.j{border-right:1px solid #2a2f38;position:relative}.j:last-child{border-right:0}.j .photo{height:246px}.score{position:absolute;left:14px;bottom:55px;background:#08090c;border:1px solid #343945;padding:13px 15px;border-radius:4px;font-size:28px;font-weight:900}.jname{text-align:center;padding:15px;font-weight:900}.side{display:grid;grid-template-columns:230px 1fr;gap:10px}.up,.chat{padding:18px}.chatrow{font-size:12px;margin:12px 0}.chatrow b{color:#6076ff;display:inline-block;width:125px}.lb{display:grid;grid-template-columns:30px 1fr 60px;line-height:26px;font-size:12px}.focus{height:100%;display:grid;grid-template-columns:1.3fr .7fr;gap:14px}.heroCamLayer iframe{width:100%;height:100%;object-fit:cover}.hero{position:relative}.heroPhoto{position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,#352967,#12141b 45%,#06070a 80%);background-size:cover;background-position:center;animation:slowPush 14s ease-in-out infinite alternate}.heroCopy{position:absolute;left:55px;bottom:50px;z-index:6}.heroCamLayer{position:absolute;inset:0;z-index:3;overflow:hidden;background:#090a0d}.heroCamLayer .camFrame{z-index:1}.heroCamLayer .camBadge{z-index:4}.heroCopy h1{font-size:78px;margin:8px 0;letter-spacing:-4px}.heroCopy .eyebrow{color:#6076ff;font-size:13px;letter-spacing:3px;font-weight:900}.info{padding:32px}.bigtime{font-size:72px;margin:28px 0}.center{height:100%;display:grid;place-items:center}.results{width:1050px;padding:40px}.results h1{font-size:52px}.rrow{display:grid;grid-template-columns:70px 1fr 120px;padding:20px 0;border-top:1px solid #2a2f38;font-size:22px}.rrow .pts{text-align:right;font-weight:900}.special{text-align:center}.special h1{font-size:110px;margin:10px}.judgesScene{height:100%;display:grid;grid-template-rows:auto 1fr;gap:18px}.judgesHero{display:flex;align-items:end;justify-content:space-between;padding:28px 34px}.judgesHero h1{font-size:58px;margin:0;letter-spacing:-2px}.judgesHero .muted{letter-spacing:3px}.judgesCards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.judgeCard{background:#0d0f13;border:1px solid #282d36;border-radius:12px;overflow:hidden;position:relative}.judgeCard .photo{height:430px}.judgeCard .meta{padding:20px}.judgeCard .meta b{font-size:24px}.judgeCard .judgeScoreBig{position:absolute;right:16px;top:16px;min-width:84px;text-align:center;background:rgba(5,6,8,.92);border:1px solid #536cff;border-radius:10px;padding:13px 12px;font-size:34px;font-weight:1000}.judgeCard:nth-child(1){animation-delay:.06s!important}.judgeCard:nth-child(2){animation-delay:.12s!important}.judgeCard:nth-child(3){animation-delay:.18s!important}.judgeCard:nth-child(4){animation-delay:.24s!important}.upNextScene{height:100%;display:grid;place-items:center}.upNextCard{width:940px;padding:52px;text-align:center}.upNextCard h1{font-size:86px;margin:8px 0;letter-spacing:-3px}.upNextCard .count{font-size:110px;font-weight:1000;color:#6076ff;margin-top:28px}.cueLayer{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;z-index:20}.cueLayer.go{animation:cue 2.2s cubic-bezier(.16,1,.3,1) both}.cueBox{background:rgba(5,6,8,.94);border-top:2px solid #536cff;border-bottom:2px solid #536cff;padding:40px 70px;text-align:center}.cueBox h1{font-size:58px;margin:0}.cueBox p{color:#7185ff;letter-spacing:4px}.footer{position:absolute;bottom:0;left:0;right:0;height:60px;border-top:1px solid #1c2029;display:flex;align-items:center;justify-content:space-between;padding:0 34px;color:#8d94a4;font-size:10px;letter-spacing:2px}.lowerThird{position:absolute;left:42px;bottom:86px;z-index:18;opacity:0;transform:translateY(24px)}.lowerThird.show{animation:lowerIn .5s cubic-bezier(.16,1,.3,1) both}.lowerBox{min-width:430px;background:rgba(7,8,10,.94);border-left:4px solid #536cff;padding:16px 22px}.lowerBox b{font-size:25px}.lowerBox div{margin-top:4px;color:#9aa0af;font-size:12px;letter-spacing:1px}
 @keyframes cue{0%{opacity:0;transform:scale(1.05)}12%{opacity:1;transform:scale(1)}75%{opacity:1}100%{opacity:0}}@keyframes sceneOut{to{opacity:0;transform:translateY(12px) scale(.992);filter:blur(5px)}}@keyframes sceneIn{from{opacity:0;transform:translateY(18px) scale(.99);filter:blur(7px)}to{opacity:1;transform:none;filter:blur(0)}}@keyframes softRefresh{0%{opacity:.82}100%{opacity:1}}@keyframes panelIn{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:none}}@keyframes slowPush{from{transform:scale(1)}to{transform:scale(1.035)}}@keyframes lowerIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}@keyframes sheen{0%,72%{transform:translateX(-120%)}88%,100%{transform:translateX(120%)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important}}
@@ -79,10 +79,55 @@ linear-gradient(90deg,rgba(83,108,255,.055) 1px,transparent 1px);background-size
 .listenDetail{padding:14px 18px;border:1px solid #252c39;border-radius:12px;background:#0c0f15;text-align:right;font-size:12px;letter-spacing:2px;color:#aeb7ca}
 @keyframes eq{0%,100%{height:16px;opacity:.55}25%{height:42px;opacity:1}50%{height:26px;opacity:.85}75%{height:56px;opacity:1}}
 
+
+.scDeck{display:grid;grid-template-columns:1fr 190px;gap:14px;align-items:stretch}
+.scWidgetWrap{height:112px;border:1px solid #2b3342;border-radius:12px;overflow:hidden;background:#090b10}
+.scWidgetWrap iframe{display:block;width:100%;height:112px;border:0}
+.scClock{border:1px solid #2b3342;border-radius:12px;background:#0b0e14;display:grid;place-items:center;text-align:center}
+.scClock .state{font-size:9px;letter-spacing:2px;color:#7185ff;font-weight:900}
+.scClock .time{font-size:28px;font-variant-numeric:tabular-nums;margin-top:7px}
+.scProgress{height:4px;background:#222834;border-radius:999px;overflow:hidden;margin:9px 16px 0}
+.scProgress i{display:block;height:100%;width:0;background:#6076ff;transition:width .12s linear}
+.listenTop .artistLive{margin-top:10px;color:#aeb6c6;font-size:13px;letter-spacing:2px}
+.eq.paused span{animation-play-state:paused;height:14px!important;opacity:.35}
+.scoreRevealScene{height:100%;display:grid;grid-template-columns:1fr .72fr;gap:16px}
+.scoreHero{position:relative;overflow:hidden}
+.scoreHero .heroCopy{left:52px;bottom:48px}
+.scoreNumberPanel{display:grid;grid-template-rows:auto 1fr auto;padding:34px}
+.scoreNumberPanel .label{font-size:11px;letter-spacing:4px;color:#7185ff}
+.scoreNumber{align-self:center;text-align:center;font-size:180px;font-weight:1000;letter-spacing:-10px;line-height:.8}
+.scoreNumber small{font-size:22px;letter-spacing:1px;color:#8e97aa}
+.judgeMiniScores{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.judgeMiniScore{padding:13px;border:1px solid #2a303c;border-radius:9px;background:#0b0e13;display:flex;justify-content:space-between;gap:12px}
+.judgeMiniScore b{font-size:12px}.judgeMiniScore span{font-weight:1000;color:#6076ff}
+.winnerScene{height:100%;position:relative;display:grid;grid-template-columns:1.25fr .75fr;gap:16px;overflow:hidden}
+.winnerScene:before{content:"";position:absolute;inset:-10%;background:radial-gradient(circle at 70% 20%,rgba(83,108,255,.20),transparent 28%),repeating-linear-gradient(115deg,transparent 0 70px,rgba(83,108,255,.05) 71px 72px);animation:driftWinner 14s linear infinite;pointer-events:none}
+.winnerHero,.winnerCopy{position:relative;z-index:2}
+.winnerCopy{display:flex;flex-direction:column;justify-content:center;padding:44px}
+.winnerCopy .k{font-size:12px;letter-spacing:5px;color:#7185ff;font-weight:900}
+.winnerCopy h1{font-size:82px;letter-spacing:-4px;margin:18px 0 8px;line-height:.9}
+.winnerCopy .scoreWin{font-size:76px;font-weight:1000;color:#6076ff;margin-top:34px}
+.winnerCopy .sub{font-size:13px;letter-spacing:3px;color:#aeb6c4}
+.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3}
+.confetti i{position:absolute;top:-40px;width:8px;height:22px;background:#6076ff;opacity:.75;animation:fall 4.8s linear infinite}
+.confetti i:nth-child(2n){width:14px;height:8px;animation-duration:5.8s}.confetti i:nth-child(3n){animation-duration:4.1s;opacity:.45}
+.bracketScene{height:100%;display:grid;grid-template-rows:auto 1fr;gap:14px}
+.bracketHead{display:flex;align-items:end;justify-content:space-between;padding:25px 28px;border:1px solid #28303d;border-radius:12px;background:#0c0f15}
+.bracketHead h1{font-size:50px;margin:5px 0 0}.bracketHead .sub{font-size:11px;letter-spacing:3px;color:#7e8cff}
+.bracketGrid{display:grid;grid-template-columns:1.25fr 1fr .8fr .65fr;gap:14px;align-items:center}
+.bracketCol{display:grid;gap:12px}
+.bracketCol h3{font-size:10px;letter-spacing:3px;color:#727d92;margin:0 0 4px}
+.match{border:1px solid #29303c;background:#0d1016;border-radius:10px;overflow:hidden}
+.match div{padding:12px 14px;border-bottom:1px solid #272d38;font-size:13px;font-weight:800}.match div:last-child{border-bottom:0}.match .advance{color:#7185ff}
+.championBox{border:1px solid #536cff;background:linear-gradient(135deg,rgba(83,108,255,.16),#0d1016);border-radius:12px;padding:26px;text-align:center}
+.championBox .tiny{font-size:9px;letter-spacing:4px;color:#8190ff}.championBox h2{font-size:32px;margin:14px 0 0}
+@keyframes fall{from{transform:translateY(-50px) rotate(0)}to{transform:translateY(1050px) rotate(720deg)}}@keyframes driftWinner{to{transform:translate3d(180px,-90px,0)}}
+
 </style>
 </head>
 <body>
 <div class="wrap"><div class="stage" id="stage"><div id="header"></div><div class="scene" id="scene"></div><div class="lowerThird" id="lowerThird"><div class="lowerBox"><b id="lowerTitle"></b><div id="lowerSub"></div></div></div><div class="cueLayer" id="cue"><div class="cueBox"><h1 id="cueTitle"></h1><p id="cueSub"></p></div></div><div class="footer"><span id="foot">FREQ PRODUCER CHAMPIONSHIP</span><span>#FREQCHAMPS</span></div></div></div>
+<script src="https://w.soundcloud.com/player/api.js"></script>
 <script>
 const API='https://ahidmhrotfetcxdwoxmn.supabase.co/functions/v1/freq-live?api=state';
 const SOUND_ENABLED=new URLSearchParams(location.search).get('sound')!=='0';
@@ -171,45 +216,120 @@ function hostScene(s){return personFocus(s,s.host||{},'HOST')}
 function contestantScene(s){const i=Math.max(0,Number(s.activeContestant||1)-1),p=(s.contestants||[])[i]||{};return personFocus(s,p,'NOW LIVE')}
 function judgesScene(s){const js=s.judges||[];return '<div class="judgesScene"><div class="judgesHero"><div><div class="muted">OFFICIAL PANEL</div><h1>JUDGES</h1></div><div class="muted">'+esc(s.round||'')+' • '+esc(s.phase||'')+'</div></div><div class="judgesCards">'+js.slice(0,4).map(j=>'<div class="judgeCard panel">'+photoMedia(j)+'<div class="judgeScoreBig">'+(j.score==null?'--':Number(j.score).toFixed(1))+'</div><div class="meta"><b>'+esc(j.name)+'</b><div class="muted">JUDGE</div></div></div>').join('')+'</div></div>'}
 
+function scEmbedUrl(url){
+  if(!/^https:\/\/(www\.)?soundcloud\.com\//i.test(String(url||'')))return '';
+  return 'https://w.soundcloud.com/player/?url='+encodeURIComponent(url)+'&auto_play=false&show_artwork=false&show_comments=false&show_user=true&show_playcount=false&sharing=false&download=false&buying=false&color=%23536cff';
+}
 function listeningScene(s){
-  const L=s.listening||{}, js=(s.judges||[]).slice(0,4), host=s.host||{};
+  const L=s.listening||{}, js=(s.judges||[]).slice(0,4), host=s.host||{}, sc=scEmbedUrl(L.soundcloudUrl);
+  const player=sc?'<div class="scDeck"><div class="scWidgetWrap"><iframe id="scPlayer" allow="autoplay" scrolling="no" src="'+attr(sc)+'"></iframe></div><div class="scClock"><div><div id="scPlaybackState" class="state">LOADING TRACK</div><div class="time"><span id="scElapsed">00:00</span> / <span id="scDuration">00:00</span></div><div class="scProgress"><i id="scProgressFill"></i></div></div></div></div>':'<div class="reactionBar"><div class="label">SOUNDCLOUD</div><div class="muted">Paste a SoundCloud track link in the producer console.</div></div>';
   return '<div class="listeningScene">'+
     '<div class="listenTop">'+
-      '<div><div class="k">'+esc(L.kicker||'NOW LISTENING')+'</div><h1>'+esc(L.title||'TRACK REVIEW')+'</h1><div class="sub">'+esc(L.subtitle||'HOST + JUDGES')+'</div></div>'+
-      '<div class="trackMeta"><div class="pill">'+esc(s.round||'ROUND')+' • '+esc(s.phase||'PHASE')+'</div><div class="producer">'+esc(L.producerName||'CURRENT PRODUCER')+'</div><div class="track">'+esc(L.trackTitle||'UNTITLED DEMO')+'</div></div>'+
+      '<div><div class="k">'+esc(L.kicker||'NOW LISTENING')+'</div><h1>'+esc(L.title||'TRACK REVIEW')+'</h1><div class="sub">'+esc(L.subtitle||'HOST + JUDGES')+'</div><div id="listenArtist" class="artistLive">'+esc(L.artistName||L.producerName||'CURRENT PRODUCER')+'</div></div>'+
+      '<div class="trackMeta"><div class="pill">'+esc(s.round||'ROUND')+' • '+esc(s.phase||'PHASE')+'</div><div class="producer">'+esc(L.artistName||L.producerName||'CURRENT PRODUCER')+'</div><div id="listenTrackTitle" class="track">'+esc(L.trackTitle||'UNTITLED DEMO')+'</div></div>'+
     '</div>'+
     '<div class="listenMid">'+
       '<div class="panel hero listenHost">'+heroMedia(host)+'<div class="heroCopy"><div class="eyebrow">HOST</div><h1>'+esc(host.name||'HOST')+'</h1><div class="muted">'+esc(host.handle||'')+'</div></div></div>'+
       '<div class="judgesStack">'+js.map(j=>'<div class="listenJudge">'+photoMedia(j)+'<div class="judgeScoreBig">'+(j.score==null?'--':Number(j.score).toFixed(1))+'</div><div class="meta"><b>'+esc(j.name)+'</b><div class="muted">JUDGE</div></div></div>').join('')+'</div>'+
     '</div>'+
-    '<div class="listenBottom"><div class="reactionBar"><div class="label">LIVE MONITOR</div><div class="eq"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div><div class="listenDetail">'+esc(L.detail||'LIVE JUDGE REACTIONS')+'</div></div>'+
+    '<div class="listenBottom"><div>'+player+'</div><div class="listenDetail"><div>'+esc(L.detail||'LIVE JUDGE REACTIONS')+'</div><div id="listenEq" class="eq paused" style="margin-top:12px"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></div>'+
   '</div>'
+}
+
+function scoreRevealScene(s){
+  const i=Math.max(0,Number(s.activeContestant||1)-1),p=(s.contestants||[])[i]||{},js=s.judges||[];
+  const score=p.score==null?'--':Number(p.score).toFixed(1);
+  return '<div class="scoreRevealScene"><div class="panel hero scoreHero">'+heroMedia(p)+'<div class="heroCopy"><div class="eyebrow">OFFICIAL SCORE</div><h1>'+esc(p.name||'TBD')+'</h1><div class="muted">'+esc(p.handle||'')+'</div></div></div><div class="panel scoreNumberPanel"><div class="label">SCORE REVEAL</div><div class="scoreNumber">'+score+'<small> PTS</small></div><div class="judgeMiniScores">'+js.slice(0,4).map(j=>'<div class="judgeMiniScore"><b>'+esc(j.name||'JUDGE')+'</b><span>'+(j.score==null?'--':Number(j.score).toFixed(1))+'</span></div>').join('')+'</div></div></div>'
+}
+function bracketScene(s){
+  const b=s.bracketData||{},q=(b.qf||[]).slice(0,8),sf=(b.sf||[]).slice(0,4),f=(b.final||[]).slice(0,2);
+  while(q.length<8)q.push('TBD');while(sf.length<4)sf.push('TBD');while(f.length<2)f.push('TBD');
+  const pair=(arr,i)=>'<div class="match"><div>'+esc(arr[i]||'TBD')+'</div><div>'+esc(arr[i+1]||'TBD')+'</div></div>';
+  return '<div class="bracketScene"><div class="bracketHead"><div><div class="sub">'+esc(b.subtitle||s.bracket||'TOP 8')+'</div><h1>'+esc(b.title||'CHAMPIONSHIP BRACKET')+'</h1></div><div class="muted">'+esc(s.round||'')+' • '+esc(s.phase||'')+'</div></div><div class="bracketGrid"><div class="bracketCol"><h3>QUARTERFINALS</h3>'+pair(q,0)+pair(q,2)+pair(q,4)+pair(q,6)+'</div><div class="bracketCol"><h3>SEMIFINALS</h3>'+pair(sf,0)+pair(sf,2)+'</div><div class="bracketCol"><h3>FINALS</h3>'+pair(f,0)+'</div><div class="championBox"><div class="tiny">CHAMPION</div><h2>'+esc(b.champion||s.winner?.name||'TBD')+'</h2></div></div></div>'
+}
+function winnerScene(s){
+  const w=s.winner||{},p={name:w.name,handle:w.handle,image:w.image,camUrl:w.camUrl},score=w.score==null?'--':Number(w.score).toFixed(1);
+  const confetti=Array.from({length:22},(_,i)=>'<i style="left:'+((i*47)%100)+'%;animation-delay:-'+((i*0.31)%5).toFixed(2)+'s"></i>').join('');
+  return '<div class="winnerScene"><div class="confetti">'+confetti+'</div><div class="panel hero winnerHero">'+heroMedia(p)+'<div class="heroCopy"><div class="eyebrow">CHAMPION</div><h1>'+esc(w.name||'WINNER')+'</h1><div class="muted">'+esc(w.handle||'')+'</div></div></div><div class="panel winnerCopy"><div class="k">FREQ PRODUCER CHAMPIONSHIP</div><h1>'+esc(w.name||'WINNER')+'</h1><div class="sub">'+esc(w.subtitle||'FREQ PRODUCER CHAMPION')+'</div><div class="scoreWin">'+score+' <span style="font-size:20px">PTS</span></div></div></div>'
 }
 function scores(s){return '<div class="center"><div class="panel results"><div class="muted">OFFICIAL RESULTS</div><h1>LEADERBOARD</h1>'+(s.leaderboard||[]).map(x=>'<div class="rrow"><span>#'+esc(x.rank)+'</span><span>'+esc(x.name)+'</span><span class="pts">'+(x.score==null?'--':Number(x.score).toFixed(1))+'</span></div>').join('')+'</div></div>'}
 function upnext(s){return '<div class="upNextScene"><div class="panel upNextCard"><div class="muted">UP NEXT</div><div style="width:320px;height:180px;margin:0 auto 22px;border-radius:10px;overflow:hidden;position:relative">'+photoMedia(s.upNext)+'</div><h1>'+esc(s.upNext?.name||'TBD')+'</h1><div class="muted">'+esc(s.upNext?.handle||'')+'</div><div class="count" data-upnext>'+upTimer(s)+'</div></div></div>'}
 function special(s,t){return '<div class="center"><div class="special"><div class="logo">FR<i>E</i>Q</div><h1>'+t+'</h1><div class="muted">'+(t==='FINALS'?'THE LAST FLIP':'FREQ PRODUCER CHAMPIONSHIP')+'</div></div></div>'}
-function sceneHTML(s,sc){if(sc==='intro')return introScene(s);if(sc==='full')return full(s);if(sc==='listening')return listeningScene(s);if(sc==='host')return hostScene(s);if(sc.startsWith('contestant'))return contestantScene(s);if(sc==='judges')return judgesScene(s);if(sc==='scores')return scores(s);if(sc==='upnext')return upnext(s);if(sc==='break')return special(s,'WE’LL BE RIGHT BACK');if(sc==='finals')return special(s,'FINALS');return full(s)}
+function sceneHTML(s,sc){if(sc==='intro')return introScene(s);if(sc==='full')return full(s);if(sc==='listening')return listeningScene(s);if(sc==='host')return hostScene(s);if(sc.startsWith('contestant'))return contestantScene(s);if(sc==='judges')return judgesScene(s);if(sc==='score_reveal')return scoreRevealScene(s);if(sc==='scores')return scores(s);if(sc==='bracket')return bracketScene(s);if(sc==='winner')return winnerScene(s);if(sc==='upnext')return upnext(s);if(sc==='break')return special(s,'WE’LL BE RIGHT BACK');if(sc==='finals')return special(s,'FINALS');return full(s)}
 function signature(s){
-  // Only include data that actually changes the scene's rendered content.
-  // Cues, lower thirds, and timer changes are handled independently so they
-  // do NOT rebuild the scene and restart its entrance animations.
   const x=JSON.parse(JSON.stringify(s));
-  delete x.cue;
-  delete x.lowerThird;
-  delete x.timer;
-  delete x.scene;
+  delete x.cue;delete x.lowerThird;delete x.timer;delete x.scene;
+  if(x.listening)delete x.listening.playerCommand;
   return JSON.stringify(x)
 }
 function renderLowerThird(s){const lt=s.lowerThird||{},n=document.getElementById('lowerThird');document.getElementById('lowerTitle').textContent=lt.title||'';document.getElementById('lowerSub').textContent=lt.subtitle||'';n.classList.toggle('show',!!lt.visible)}
+
+let scWidget=null,scReady=false,scDurationMs=0,lastScCommandNonce=0,pendingScCommand=null;
+function msText(ms){let sec=Math.max(0,Math.floor(Number(ms||0)/1000));return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')}
+function setScTime(pos,dur){
+  const a=document.getElementById('scElapsed'),b=document.getElementById('scDuration'),f=document.getElementById('scProgressFill');
+  if(a)a.textContent=msText(pos);if(b)b.textContent=msText(dur);
+  if(f)f.style.width=(dur>0?Math.max(0,Math.min(100,pos/dur*100)):0)+'%'
+}
+function setScPlaying(on){
+  const st=document.getElementById('scPlaybackState'),eq=document.getElementById('listenEq');
+  if(st)st.textContent=on?'PLAYING':'PAUSED';
+  if(eq)eq.classList.toggle('paused',!on)
+}
+function scArtist(sound){
+  return sound?.publisher_metadata?.artist||sound?.artist_name||sound?.user?.username||sound?.user?.full_name||''
+}
+function setupSoundCloud(s){
+  scWidget=null;scReady=false;scDurationMs=0;
+  const frame=document.getElementById('scPlayer');
+  if(!frame||!window.SC||!SC.Widget)return;
+  try{
+    scWidget=SC.Widget(frame);
+    scWidget.bind(SC.Widget.Events.READY,()=>{
+      scReady=true;
+      try{scWidget.setVolume(Math.max(0,Math.min(100,Number(s.listening?.volume??82))))}catch(e){}
+      scWidget.getDuration(d=>{scDurationMs=Number(d||0);setScTime(0,scDurationMs)});
+      scWidget.getCurrentSound(sound=>{
+        const artist=scArtist(sound),title=sound?.title||'';
+        const a=document.getElementById('listenArtist'),t=document.getElementById('listenTrackTitle');
+        if(a&&artist)a.textContent=artist;if(t&&title)t.textContent=title
+      });
+      scWidget.isPaused(p=>setScPlaying(!p));
+      if(pendingScCommand){executeScCommand(pendingScCommand,s);pendingScCommand=null}
+    });
+    scWidget.bind(SC.Widget.Events.PLAY_PROGRESS,e=>{const p=Number(e?.currentPosition||0);setScTime(p,scDurationMs)});
+    scWidget.bind(SC.Widget.Events.PLAY,()=>setScPlaying(true));
+    scWidget.bind(SC.Widget.Events.PAUSE,()=>setScPlaying(false));
+    scWidget.bind(SC.Widget.Events.FINISH,()=>{setScPlaying(false);setScTime(scDurationMs,scDurationMs)});
+    scWidget.bind(SC.Widget.Events.ERROR,()=>{const st=document.getElementById('scPlaybackState');if(st)st.textContent='SOUNDCLOUD ERROR'});
+  }catch(e){}
+}
+function executeScCommand(cmd,s){
+  if(!cmd||!cmd.type||cmd.type==='none')return;
+  if(!scWidget||!scReady){pendingScCommand=cmd;return}
+  try{
+    if(cmd.type==='play')scWidget.play();
+    else if(cmd.type==='pause')scWidget.pause();
+    else if(cmd.type==='restart'){scWidget.seekTo(0);scWidget.play()}
+    else if(cmd.type==='stop'){scWidget.pause();scWidget.seekTo(0);setScTime(0,scDurationMs)}
+    else if(cmd.type==='volume')scWidget.setVolume(Math.max(0,Math.min(100,Number(s.listening?.volume??82))))
+  }catch(e){}
+}
+function handleScCommand(s){
+  const cmd=s.listening?.playerCommand||{};
+  const n=Number(cmd.nonce||0);
+  if(n&&n!==lastScCommandNonce){lastScCommandNonce=n;executeScCommand(cmd,s)}
+}
+function afterSceneRender(s,sc){if(sc==='listening')setupSoundCloud(s)}
 function draw(s){state=s;document.getElementById('header').innerHTML=header(s);document.getElementById('foot').textContent=(s.eventTitle||'FREQ PRODUCER CHAMPIONSHIP')+' • '+(s.season||'SEASON 1');renderLowerThird(s);const sc=s.scene||'full',sig=signature(s),node=document.getElementById('scene'),stage=document.getElementById('stage');stage.classList.toggle('introMode',sc==='intro');if(sc!==lastScene){
   if(lastScene){
-    const sceneSound=sc==='judges'?'judges':sc==='scores'?'scores':sc==='finals'?'finals':sc==='intro'?'intro':'transition';
+    const sceneSound=sc==='judges'?'judges':(sc==='scores'||sc==='score_reveal')?'scores':(sc==='finals'||sc==='winner')?'finals':sc==='intro'?'intro':'transition';
     playSound(sceneSound);
   }
   node.classList.remove('scene-in','soft-refresh');node.classList.add('scene-out');
-  setTimeout(()=>{node.innerHTML=sceneHTML(s,sc);node.classList.remove('scene-out');void node.offsetWidth;node.classList.add('scene-in')},170);
+  setTimeout(()=>{node.innerHTML=sceneHTML(s,sc);node.classList.remove('scene-out');void node.offsetWidth;node.classList.add('scene-in');afterSceneRender(s,sc)},170);
   lastScene=sc;lastSignature=sig;
-}else if(sig!==lastSignature){node.innerHTML=sceneHTML(s,sc);node.classList.remove('soft-refresh');void node.offsetWidth;node.classList.add('soft-refresh');lastSignature=sig}const c=s.cue||{};if(Number(c.nonce||0)!==lastCue){lastCue=Number(c.nonce||0);if(c.type&&c.type!=='none')fire(c.type)}}
+}else if(sig!==lastSignature){node.innerHTML=sceneHTML(s,sc);node.classList.remove('soft-refresh');void node.offsetWidth;node.classList.add('soft-refresh');lastSignature=sig;afterSceneRender(s,sc)}handleScCommand(s);const c=s.cue||{};if(Number(c.nonce||0)!==lastCue){lastCue=Number(c.nonce||0);if(c.type&&c.type!=='none')fire(c.type)}}
 function fire(t){
   if(t==='audio_test_transition'){playSound('transition');return}
   if(t==='audio_test_intro'){playSound('intro');return}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREQ Producer Console • v6</title>
+<title>FREQ Producer Console • v7</title>
 <style>
 :root{
   --bg:#06070a;--panel:#0e1117;--panel2:#121620;--line:#252b38;--line2:#30384a;
@@ -68,7 +68,14 @@ button:active{transform:translateY(0)}
 .introPreview:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 47%,rgba(83,108,255,.08) 50%,transparent 53%);animation:scan 5s linear infinite}
 .introPreview .k{font-size:10px;letter-spacing:3px;color:#7f8fff}.introPreview h3{font-size:38px;line-height:1;margin:42px 0 8px;letter-spacing:-2px}.introPreview h3 span{color:#6678ff}.introPreview .sub{font-size:13px;letter-spacing:2px;color:#a8afbd}.introPreview .detail{position:absolute;bottom:24px;left:26px;color:#697386;font-size:10px;letter-spacing:2px}
 @keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.rows{display:grid;gap:8px}.cameraRows{display:grid;gap:8px}.cameraRow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;padding:10px;border:1px solid #262d39;background:#0d1016;border-radius:10px}.cameraRow b{font-size:11px;letter-spacing:.7px}.cameraHint{font-size:10px;color:#687386;margin-top:10px;line-height:1.5}.row{display:grid;grid-template-columns:50px 1.2fr 1.2fr 1fr 90px 86px;gap:7px;align-items:center;padding:8px;border:1px solid #262d39;background:#0d1016;border-radius:10px}
+.rows{display:grid;gap:8px}.cameraRows{display:grid;gap:8px}.cameraRow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;padding:10px;border:1px solid #262d39;background:#0d1016;border-radius:10px}.cameraRow b{font-size:11px;letter-spacing:.7px}.cameraHint{font-size:10px;color:#687386;margin-top:10px;line-height:1.5}
+.scPanel{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+.scStatus{min-height:18px;margin-top:9px;font-size:11px;color:#8d98ad}
+.scStatus.good{color:#42d993}.scStatus.bad{color:#ff8292}
+.resultControl{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid #272e3b;border-radius:11px;background:#0d1016}
+.resultControl strong{font-size:13px}.resultControl .muted{margin-top:4px}
+.bracketEditor{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media(max-width:900px){.bracketEditor{grid-template-columns:1fr 1fr}}.row{display:grid;grid-template-columns:50px 1.2fr 1.2fr 1fr 90px 86px;gap:7px;align-items:center;padding:8px;border:1px solid #262d39;background:#0d1016;border-radius:10px}
 .judge{grid-template-columns:50px 1fr 100px}.rank{display:grid;grid-template-columns:70px 1fr 120px;gap:7px;margin-bottom:7px}
 .toggleRow{display:flex;align-items:center;gap:10px}.toggle{appearance:none;width:42px;height:24px;border-radius:999px;background:#242a36;border:1px solid #343b49;position:relative;cursor:pointer}.toggle:after{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;border-radius:50%;background:#7e8798;transition:.18s}.toggle:checked{background:#4458d7;border-color:#6678ff}.toggle:checked:after{left:20px;background:white}
 @media(max-width:1100px){.layout{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid #202531}.switch{grid-template-columns:repeat(3,1fr)}.introPanel{grid-template-columns:1fr}}
@@ -121,7 +128,22 @@ button:active{transform:translateY(0)}
 </div></section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">TRACK REVIEW</div><h2>LISTENING SCENE</h2></div><button id="takeListening" class="primary">TAKE LISTENING LIVE</button></div>
-<div class="body grid3" id="listeningFields"></div></section>
+<div class="body">
+  <div class="grid3" id="listeningFields"></div>
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid #252b37">
+    <div class="scPanel">
+      <div class="field"><label>SOUNDCLOUD TRACK LINK</label><input id="scUrl" placeholder="https://soundcloud.com/artist/track"></div>
+      <button id="scLoad" class="primary">LOAD + AUTO-FILL</button>
+    </div>
+    <div id="scStatus" class="scStatus">Paste a SoundCloud track URL to load its artist and track name.</div>
+    <div class="actions" style="margin-top:10px">
+      <button id="scPlay" class="primary">PLAY ON AIR</button>
+      <button id="scPause" class="ghost">PAUSE</button>
+      <button id="scRestart" class="ghost">RESTART TRACK</button>
+      <button id="scStop" class="ghost">STOP / RESET</button>
+    </div>
+  </div>
+</div></section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">LIVE FX</div><h2>ANIMATION CUES</h2></div></div><div class="body"><div class="cueGrid">
 <button class="cue" data-cue="round_start">ROUND START</button><button class="cue" data-cue="contestant">CONTESTANT</button><button class="cue" data-cue="scores_locked">SCORES LOCKED</button><button class="cue" data-cue="timeup">TIME'S UP</button><button class="cue" data-cue="finals">FINALS</button>
@@ -153,6 +175,27 @@ button:active{transform:translateY(0)}
 
 <section class="card"><div class="head"><div><div class="eyebrow">TALENT</div><h2>CONTESTANTS</h2></div></div><div class="body rows" id="contestants"></div></section>
 <section class="card"><div class="head"><div><div class="eyebrow">PANEL</div><h2>JUDGES</h2></div></div><div class="body rows" id="judges"></div></section>
+<section class="card"><div class="head"><div><div class="eyebrow">BROADCAST RESULTS</div><h2>RESULT SCENES</h2></div></div>
+<div class="body">
+  <div class="grid3">
+    <div class="resultControl"><div><strong>SCORE REVEAL</strong><div id="scoreRevealCurrent" class="muted">Active contestant</div></div><button id="takeScoreReveal" class="primary">REVEAL</button></div>
+    <div class="resultControl"><div><strong>BRACKET</strong><div class="muted">Tournament progression</div></div><button id="takeBracket" class="ghost">TAKE</button></div>
+    <div class="resultControl"><div><strong>WINNER</strong><div id="winnerCurrent" class="muted">Champion</div></div><button id="takeWinner" class="ghost">TAKE</button></div>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="field"><label>SCORE REVEAL CONTESTANT</label><select id="scoreRevealSelect"></select></div>
+    <div class="actions" style="align-items:end"><button id="syncWinner" class="ghost">WINNER FROM #1</button><button id="autoBracket" class="ghost">AUTO-FILL BRACKET</button></div>
+  </div>
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid #252b37">
+    <div class="sideTitle">WINNER GRAPHIC</div>
+    <div id="winnerFields" class="grid3"></div>
+  </div>
+  <div style="margin-top:16px;padding-top:16px;border-top:1px solid #252b37">
+    <div class="sideTitle">BRACKET / RESULTS</div>
+    <div id="bracketFields" class="bracketEditor"></div>
+  </div>
+</div></section>
+
 <section class="card"><div class="head"><div><div class="eyebrow">RESULTS</div><h2>LEADERBOARD</h2></div><button id="sort" class="ghost">SORT FROM SCORES</button></div><div class="body" id="leaderboard"></div></section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">GRAPHICS</div><h2>LOWER THIRD</h2></div></div><div class="body grid3">
@@ -164,7 +207,7 @@ button:active{transform:translateY(0)}
 
 <script>
 const API='https://ahidmhrotfetcxdwoxmn.supabase.co/functions/v1/freq-live';
-const scenes=[['intro','INTRO'],['full','FULL SHOW'],['listening','LISTENING'],['host','HOST'],['contestant1','CONTESTANT 1'],['contestant2','CONTESTANT 2'],['contestant3','CONTESTANT 3'],['contestant4','CONTESTANT 4'],['judges','JUDGES'],['scores','SCORES'],['upnext','UP NEXT'],['break','BREAK'],['finals','FINALS']];
+const scenes=[['intro','INTRO'],['full','FULL SHOW'],['listening','LISTENING'],['host','HOST'],['contestant1','CONTESTANT 1'],['contestant2','CONTESTANT 2'],['contestant3','CONTESTANT 3'],['contestant4','CONTESTANT 4'],['judges','JUDGES'],['score_reveal','SCORE REVEAL'],['scores','SCORES'],['bracket','BRACKET'],['upnext','UP NEXT'],['break','BREAK'],['finals','FINALS'],['winner','WINNER']];
 let token=localStorage.getItem('freq_token')||'',live=null,draft=null;
 const el=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x));
 async function api(body){const h={'Content-Type':'application/json'};if(token)h.Authorization='Bearer '+token;const r=await fetch(API,{method:'POST',headers:h,body:JSON.stringify(body)});const d=await r.json().catch(()=>({error:'Request failed'}));if(!r.ok)throw new Error(d.error||'Request failed');return d}
@@ -180,6 +223,27 @@ function ensureDefaults(s){
   s.listening.producerName??=(s.contestants?.[(Math.max(1,Number(s.activeContestant||1))-1)]?.name||'CURRENT PRODUCER');
   s.listening.trackTitle??='UNTITLED DEMO';
   s.listening.detail??='LIVE JUDGE REACTIONS';
+  s.listening.artistName??=s.listening.producerName??'CURRENT PRODUCER';
+  s.listening.soundcloudUrl??='';
+  s.listening.volume??=82;
+  s.listening.playerCommand??={type:'none',nonce:0};
+  s.winner??={};
+  const top=(s.leaderboard||[]).slice().sort((a,b)=>Number(a.rank||99)-Number(b.rank||99))[0]||{};
+  s.winner.name??=top.name??'CHAMPION';
+  s.winner.handle??='';
+  s.winner.score??=top.score??null;
+  s.winner.subtitle??='FREQ PRODUCER CHAMPION';
+  s.winner.image??='';
+  s.winner.camUrl??='';
+  s.bracketData??={};
+  const seed=(s.contestants||[]).map(x=>x.name||'TBD');
+  while(seed.length<8)seed.push('TBD');
+  s.bracketData.title??='CHAMPIONSHIP BRACKET';
+  s.bracketData.subtitle??=s.bracket??'TOP 8';
+  s.bracketData.qf??=seed.slice(0,8);
+  s.bracketData.sf??=['TBD','TBD','TBD','TBD'];
+  s.bracketData.final??=['TBD','TBD'];
+  s.bracketData.champion??=s.winner.name||'TBD';
   s.upNext??={};
   const legacy=Math.max(0,Number(s.upNext.countdown??45)||0);
   if(s.upNext.durationSeconds==null)s.upNext.durationSeconds=legacy;
@@ -211,9 +275,28 @@ if(el('listeningFields')) el('listeningFields').innerHTML=
   field('KICKER','listening.kicker')+
   field('TITLE','listening.title')+
   field('SUBTITLE','listening.subtitle')+
-  field('PRODUCER NAME','listening.producerName')+
+  field('ARTIST NAME','listening.artistName')+
   field('TRACK TITLE','listening.trackTitle')+
-  field('DETAIL LINE','listening.detail');
+  field('DETAIL LINE','listening.detail')+
+  field('TRACK VOLUME 0–100','listening.volume','number');
+if(el('scUrl')) el('scUrl').value=draft.listening?.soundcloudUrl||'';
+const revealIdx=Math.max(0,Number(draft.activeContestant||1)-1),revealPerson=(draft.contestants||[])[revealIdx]||{};
+if(el('scoreRevealCurrent')) el('scoreRevealCurrent').textContent=(revealPerson.name||'TBD')+(revealPerson.score!=null?' • '+Number(revealPerson.score).toFixed(1):'');
+if(el('scoreRevealSelect')) el('scoreRevealSelect').innerHTML=(draft.contestants||[]).map((c,i)=>'<option value="'+(i+1)+'" '+(i===revealIdx?'selected':'')+'>'+(i+1)+'. '+esc(c.name||'TBD')+'</option>').join('');
+if(el('winnerCurrent')) el('winnerCurrent').textContent=(draft.winner?.name||'CHAMPION')+(draft.winner?.score!=null?' • '+Number(draft.winner.score).toFixed(1):'');
+if(el('winnerFields')) el('winnerFields').innerHTML=
+  field('WINNER NAME','winner.name')+
+  field('WINNER HANDLE','winner.handle')+
+  field('WINNER SCORE','winner.score','number')+
+  field('SUBTITLE','winner.subtitle')+
+  field('IMAGE URL','winner.image')+
+  field('CAMERA URL','winner.camUrl');
+if(el('bracketFields')) el('bracketFields').innerHTML=
+  '<div>'+field('BRACKET TITLE','bracketData.title')+field('BRACKET SUBTITLE','bracketData.subtitle')+'</div>'+
+  '<div>'+[0,1,2,3,4,5,6,7].map(i=>field('QF SLOT '+(i+1),'bracketData.qf.'+i)).join('')+'</div>'+
+  '<div>'+[0,1,2,3].map(i=>field('SEMIFINAL '+(i+1),'bracketData.sf.'+i)).join('')+'</div>'+
+  '<div>'+[0,1].map(i=>field('FINALIST '+(i+1),'bracketData.final.'+i)).join('')+field('CHAMPION','bracketData.champion')+'</div>';
+
 el('hostFields').innerHTML=
   field('HOST NAME','host.name')+
   field('HOST HANDLE','host.handle')+
@@ -241,6 +324,61 @@ el('leaderboard').innerHTML=(draft.leaderboard||[]).map((x,i)=>'<div class="rank
 el('ltTitle').value=draft.lowerThird.title||'';el('ltSub').value=draft.lowerThird.subtitle||'';el('ltVisible').checked=!!draft.lowerThird.visible;preview();bind()}
 function preview(){if(!draft)return;el('prevKicker').textContent=draft.intro?.kicker||'LIVE BROADCAST';const title=draft.intro?.title||'STREAM STARTING SOON';const words=title.split(' ');if(words.length>1){el('prevTitle').innerHTML=esc(words[0])+'<br><span>'+esc(words.slice(1).join(' '))+'</span>'}else el('prevTitle').textContent=title;el('prevSub').textContent=draft.intro?.subtitle||'';el('prevDetail').textContent=draft.intro?.detail||''}
 function bind(){document.querySelectorAll('[data-path]').forEach(n=>n.oninput=()=>{setp(n.dataset.path,n.type==='number'&&n.value!==''?Number(n.value):n.value);if(n.dataset.path.startsWith('intro.'))preview()});document.querySelectorAll('[data-scene]').forEach(n=>n.onclick=()=>take(n.dataset.scene));document.querySelectorAll('[data-focus]').forEach(n=>n.onclick=()=>focus(Number(n.dataset.focus)));document.querySelectorAll('[data-ci]').forEach(n=>n.oninput=()=>{draft.contestants[+n.dataset.ci][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-ji]').forEach(n=>n.oninput=()=>{draft.judges[+n.dataset.ji][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-li]').forEach(n=>n.oninput=()=>{draft.leaderboard[+n.dataset.li][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()})}
+
+function scSetStatus(msg,kind=''){const n=el('scStatus');if(!n)return;n.textContent=msg;n.className='scStatus '+kind}
+async function loadSoundCloud(){
+  const url=String(el('scUrl')?.value||'').trim();
+  if(!/^https:\/\/(www\.)?soundcloud\.com\//i.test(url)){scSetStatus('Use a full soundcloud.com track URL.','bad');return}
+  scSetStatus('Loading SoundCloud metadata…');
+  try{
+    const r=await fetch('https://soundcloud.com/oembed?format=json&url='+encodeURIComponent(url),{cache:'no-store'});
+    if(!r.ok)throw new Error('SoundCloud could not resolve that URL');
+    const d=await r.json();
+    const author=String(d.author_name||'').trim();
+    let title=String(d.title||'').trim();
+    if(author){
+      const suffix=' by '+author;
+      if(title.toLowerCase().endsWith(suffix.toLowerCase()))title=title.slice(0,-suffix.length);
+    }else{
+      const p=title.lastIndexOf(' by ');
+      if(p>0){draft.listening.artistName=title.slice(p+4);title=title.slice(0,p)}
+    }
+    draft.listening.soundcloudUrl=url;
+    if(author){draft.listening.artistName=author;draft.listening.producerName=author}
+    if(title)draft.listening.trackTitle=title;
+    mark();
+    await push(draft);
+    scSetStatus('Loaded: '+(draft.listening.artistName||'Artist')+' — '+(draft.listening.trackTitle||'Track'),'good');
+  }catch(e){scSetStatus(e.message||'Could not load SoundCloud metadata.','bad')}
+}
+async function scCommand(type){
+  const s=clone(live);ensureDefaults(s);
+  s.listening.playerCommand={type,nonce:Number(s.listening.playerCommand?.nonce||0)+1};
+  if(type==='volume')s.listening.volume=Math.max(0,Math.min(100,Number(draft.listening.volume||82)));
+  await push(s)
+}
+function syncWinnerFromLeaderboard(){
+  const sorted=(draft.leaderboard||[]).slice().sort((a,b)=>Number(a.rank||99)-Number(b.rank||99));
+  const top=sorted[0]||{};
+  const person=(draft.contestants||[]).find(c=>String(c.name||'').toLowerCase()===String(top.name||'').toLowerCase())||{};
+  draft.winner.name=top.name||person.name||'CHAMPION';
+  draft.winner.handle=person.handle||draft.winner.handle||'';
+  draft.winner.score=top.score??person.score??draft.winner.score??null;
+  draft.winner.image=person.image||draft.winner.image||'';
+  draft.winner.camUrl=person.camUrl||draft.winner.camUrl||'';
+  draft.bracketData.champion=draft.winner.name;
+  mark();render()
+}
+function autoFillBracket(){
+  const names=(draft.contestants||[]).map(c=>c.name||'TBD');
+  while(names.length<8)names.push('TBD');
+  const lb=(draft.leaderboard||[]).slice().sort((a,b)=>Number(a.rank||99)-Number(b.rank||99)).map(x=>x.name||'TBD');
+  draft.bracketData.qf=names.slice(0,8);
+  draft.bracketData.sf=[lb[0]||'TBD',lb[1]||'TBD',lb[2]||'TBD',lb[3]||'TBD'];
+  draft.bracketData.final=[lb[0]||'TBD',lb[1]||'TBD'];
+  draft.bracketData.champion=lb[0]||draft.winner?.name||'TBD';
+  mark();render()
+}
 async function push(s=draft){ensureDefaults(s);await api({action:'update',state:s});live=clone(s);draft=clone(s);saved();render()}
 async function take(sc){
   const s=clone(live);ensureDefaults(s);s.scene=sc;
@@ -281,10 +419,21 @@ el('goIntro').onclick=()=>take('intro');
 el('takeIntro').onclick=()=>take('intro');
 el('goListening').onclick=()=>take('listening');
 el('takeListening').onclick=()=>take('listening');
+el('scLoad').onclick=()=>loadSoundCloud();
+el('scPlay').onclick=()=>scCommand('play');
+el('scPause').onclick=()=>scCommand('pause');
+el('scRestart').onclick=()=>scCommand('restart');
+el('scStop').onclick=()=>scCommand('stop');
+el('takeScoreReveal').onclick=async()=>{const i=Math.max(1,Number(el('scoreRevealSelect').value||1));const s=clone(live);s.activeContestant=i;s.scene='score_reveal';await push(s)};
+el('takeBracket').onclick=()=>take('bracket');
+el('takeWinner').onclick=()=>take('winner');
+el('syncWinner').onclick=()=>syncWinnerFromLeaderboard();
+el('autoBracket').onclick=()=>autoFillBracket();
 el('goFull').onclick=()=>take('full');el('takeHost').onclick=()=>take('host');el('takeUpNext').onclick=()=>take('upnext');
 el('upNextStart').onclick=()=>upNextTimer('start');el('upNextPause').onclick=()=>upNextTimer('pause');el('upNextReset').onclick=()=>upNextTimer('reset');el('upNextMinus').onclick=()=>upNextTimer('minus');el('upNextPlus').onclick=()=>upNextTimer('plus');
 el('testIntroAudio').onclick=()=>cue('audio_test_intro');
 el('testTransitionAudio').onclick=()=>cue('audio_test_transition');
+if(el('scUrl'))el('scUrl').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();loadSoundCloud()}};
 el('start').onclick=()=>timer('start');el('pause').onclick=()=>timer('pause');el('reset').onclick=()=>timer('reset');el('minus').onclick=()=>timer('minus');el('plus').onclick=()=>timer('plus');
 document.querySelectorAll('[data-cue]').forEach(n=>n.onclick=()=>cue(n.dataset.cue));
 el('sort').onclick=()=>{draft.leaderboard=(draft.contestants||[]).filter(x=>x.score!=null).slice().sort((a,b)=>b.score-a.score).map((x,i)=>({rank:i+1,name:x.name,score:+x.score}));mark();render()};
