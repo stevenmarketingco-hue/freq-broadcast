@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FREQ Broadcast</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07080a;color:#fff;font-family:Arial,Helvetica,sans-serif;display:grid;place-items:center;min-height:100vh}
+.box{width:min(820px,92vw)}
+h1{font-size:72px;margin:0;letter-spacing:-5px}
+h1 span{color:#536cff}
+.sub{color:#8e94a4;letter-spacing:4px;font-size:12px;margin:6px 0 30px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:#101217;border:1px solid #292e38;border-radius:16px;padding:26px}
+.card p{color:#9aa0ae;line-height:1.55}
+.btn{display:inline-block;margin-top:14px;padding:12px 16px;border-radius:9px;background:#536cff;color:#fff;text-decoration:none;font-weight:800}
+.alt{background:#181b22;border:1px solid #323845}
+.note{margin-top:20px;color:#737b8c;font-size:12px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}h1{font-size:56px}}
+</style>
+</head>
+<body>
+<main class="box">
+  <h1>FR<span>E</span>Q</h1>
+  <div class="sub">PRODUCER CHAMPIONSHIP</div>
+  <div class="grid">
+    <section class="card">
+      <h2>Producer Console</h2>
+      <p>Control scenes, timer, contestants, judges, scores, leaderboard, and live animation cues.</p>
+      <a class="btn" href="./control.html">OPEN CONSOLE</a>
+    </section>
+    <section class="card">
+      <h2>OBS Overlay</h2>
+      <p>1920×1080 browser-source overlay connected to the same live Supabase state.</p>
+      <a class="btn alt" href="./overlay.html" target="_blank" rel="noopener">OPEN OVERLAY</a>
+    </section>
+  </div>
+  <div class="note">FREQ live backend powered by Supabase.</div>
+</main>
+</body>
+</html>

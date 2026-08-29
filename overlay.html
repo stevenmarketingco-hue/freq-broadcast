@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FREQ Overlay</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:#fff;font-family:Arial,Helvetica,sans-serif}
+.wrap{position:absolute;inset:0;display:grid;place-items:center}
+.stage{width:1920px;height:1080px;transform-origin:center;position:absolute;background:radial-gradient(circle at 75% 0,#17142b 0,transparent 30%),#06070a;overflow:hidden}
+.top{height:92px;display:grid;grid-template-columns:1fr 520px 1fr;align-items:center;padding:0 30px;border-bottom:1px solid #1c2029;background:#090a0e}
+.logo{font-size:44px;font-weight:1000;letter-spacing:-4px}.logo i{font-style:normal;color:#536cff}
+.round{height:76px;border:1px solid #252a34;border-top:0;border-radius:0 0 22px 22px;display:flex;align-items:center;justify-content:center;gap:20px;font-weight:900;font-size:22px}.round b{color:#6076ff}
+.present{text-align:right;color:#9aa0af;font-size:12px}.present strong{color:#fff;font-size:18px;margin-left:10px}
+.scene{position:absolute;left:26px;right:26px;top:108px;bottom:72px}
+.grid{height:100%;display:grid;grid-template-columns:510px 550px 1fr;grid-template-rows:355px 340px 1fr;gap:12px}
+.panel{background:#0d0f13;border:1px solid #282d36;border-radius:10px;overflow:hidden}
+.title{font-size:11px;font-weight:900;letter-spacing:1.5px;padding:12px 14px}.title span{background:#3521cc;padding:7px 10px;border-radius:3px}
+.host{grid-column:1;grid-row:1}.challenge{grid-column:2;grid-row:1;padding:24px}.contestants{grid-column:3;grid-row:1}.judges{grid-column:1/3;grid-row:2}.side{grid-column:3;grid-row:2}.bottom{grid-column:1/4;grid-row:3;padding:20px 24px}
+.photo{height:285px;background:radial-gradient(circle at 50% 20%,#33275e,#13151c 45%,#090a0d 80%);background-size:cover;background-position:center}
+.meta{padding:12px 18px}.meta b{font-size:18px}.muted{color:#8f96a6;font-size:12px}
+.challenge h1{color:#6076ff;font-size:30px}.metrics{display:flex;gap:45px;margin-top:36px}.metric small{display:block;color:#8d94a4}.metric strong{font-size:25px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px}.c{border:1px solid #2b3039;border-radius:8px;overflow:hidden}.c .photo{height:180px}.c .meta{padding:9px}.c b{font-size:14px}.status{color:#6076ff;font-size:10px;font-weight:900;margin-top:9px}
+.judgeGrid{display:grid;grid-template-columns:repeat(4,1fr);height:calc(100% - 40px)}.j{border-right:1px solid #2a2f38;position:relative}.j:last-child{border-right:0}.j .photo{height:246px}.score{position:absolute;left:14px;bottom:55px;background:#08090c;border:1px solid #343945;padding:13px 15px;border-radius:4px;font-size:28px;font-weight:900}.jname{text-align:center;padding:15px;font-weight:900}
+.side{display:grid;grid-template-columns:230px 1fr;gap:10px}.up,.chat{padding:18px}.chatrow{font-size:12px;margin:12px 0}.chatrow b{color:#6076ff;display:inline-block;width:125px}
+.lb{display:grid;grid-template-columns:30px 1fr 60px;line-height:26px;font-size:12px}
+.focus{height:100%;display:grid;grid-template-columns:1.3fr .7fr;gap:14px}.hero{position:relative}.heroPhoto{position:absolute;inset:0;background:radial-gradient(circle at 50% 25%,#352967,#12141b 45%,#06070a 80%);background-size:cover;background-position:center}.heroCopy{position:absolute;left:55px;bottom:50px}.heroCopy h1{font-size:78px;margin:8px 0;letter-spacing:-4px}.heroCopy .eyebrow{color:#6076ff;font-size:13px;letter-spacing:3px;font-weight:900}.info{padding:32px}.bigtime{font-size:72px;margin:28px 0}
+.center{height:100%;display:grid;place-items:center}.results{width:1050px;padding:40px}.results h1{font-size:52px}.rrow{display:grid;grid-template-columns:70px 1fr 120px;padding:20px 0;border-top:1px solid #2a2f38;font-size:22px}.rrow .pts{text-align:right;font-weight:900}
+.special{text-align:center}.special h1{font-size:110px;margin:10px}
+.cueLayer{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0}.cueLayer.go{animation:cue 2.2s ease both}
+.cueBox{background:rgba(5,6,8,.94);border-top:2px solid #536cff;border-bottom:2px solid #536cff;padding:40px 70px;text-align:center}.cueBox h1{font-size:58px;margin:0}.cueBox p{color:#7185ff;letter-spacing:4px}
+.footer{position:absolute;bottom:0;left:0;right:0;height:60px;border-top:1px solid #1c2029;display:flex;align-items:center;justify-content:space-between;padding:0 34px;color:#8d94a4;font-size:10px;letter-spacing:2px}
+@keyframes cue{0%{opacity:0;transform:scale(1.05)}12%{opacity:1;transform:scale(1)}75%{opacity:1}100%{opacity:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div id="header"></div>
+    <div class="scene" id="scene"></div>
+    <div class="cueLayer" id="cue">
+      <div class="cueBox"><h1 id="cueTitle"></h1><p id="cueSub"></p></div>
+    </div>
+    <div class="footer"><span id="foot">FREQ PRODUCER CHAMPIONSHIP</span><span>#FREQCHAMPS</span></div>
+  </div>
+</div>
+
+<script>
+const API='https://ahidmhrotfetcxdwoxmn.supabase.co/functions/v1/freq-live?api=state';
+let state=null,lastCue=0;
+const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;');
+const bg=p=>p?.image?'style="background-image:url(\''+String(p.image).replaceAll("'","")+'\')"':'';
+
+function timer(s){
+  const t=s.timer||{};
+  let r=Number(t.remainingSeconds||0);
+  if(t.running&&t.startedAt) r-=Math.max(0,(Date.now()-new Date(t.startedAt).getTime())/1000);
+  r=Math.max(0,Math.ceil(r));
+  return String(Math.floor(r/60)).padStart(2,'0')+':'+String(r%60).padStart(2,'0')
+}
+function header(s){
+  return '<div class="top"><div class="logo">FR<i>E</i>Q</div><div class="round"><b>'+esc(s.round)+'</b><span>|</span><span>'+esc(s.phase)+'</span></div><div class="present">PRESENTED BY <strong>'+esc(s.presentedBy)+'</strong></div></div>'
+}
+function full(s){
+  const cs=s.contestants||[],js=s.judges||[],lb=s.leaderboard||[],chat=s.chat||[];
+  return '<div class="grid">'+
+    '<section class="panel host"><div class="title"><span>HOST</span></div><div class="photo" '+bg(s.host)+'></div><div class="meta"><b>'+esc(s.host?.name)+'</b><div class="muted">'+esc(s.host?.handle)+'</div></div></section>'+
+    '<section class="panel challenge"><div class="muted">CHALLENGE</div><h1>'+esc(s.challengeTitle)+'</h1><p>'+esc(s.challengeDescription)+'</p><div class="metrics"><div class="metric"><small>BPM</small><strong>'+esc(s.bpm)+'</strong></div><div class="metric"><small>KEY</small><strong>'+esc(s.key)+'</strong></div><div class="metric"><small>TIME</small><strong data-time>'+timer(s)+'</strong></div></div></section>'+
+    '<section class="panel contestants"><div class="title"><span>CONTESTANTS</span></div><div class="cards">'+cs.slice(0,4).map(c=>'<div class="c"><div class="photo" '+bg(c)+'></div><div class="meta"><b>'+esc(c.name)+'</b><div class="muted">'+esc(c.handle)+'</div><div class="status">'+esc(c.status)+'</div></div></div>').join('')+'</div></section>'+
+    '<section class="panel judges"><div class="title"><span>JUDGES</span></div><div class="judgeGrid">'+js.slice(0,4).map(j=>'<div class="j"><div class="photo" '+bg(j)+'></div><div class="score">'+(j.score==null?'--':Number(j.score).toFixed(1))+'</div><div class="jname">'+esc(j.name)+'</div></div>').join('')+'</div></section>'+
+    '<section class="side"><div class="panel up"><div class="title">UP NEXT</div><h2>'+esc(s.upNext?.name||'TBD')+'</h2><div class="muted">'+esc(s.upNext?.handle||'')+'</div><div class="bigtime" style="font-size:30px">00:'+String(s.upNext?.countdown||0).padStart(2,'0')+'</div></div><div class="panel chat"><div class="title">LIVE CHAT</div>'+chat.slice(0,7).map(x=>'<div class="chatrow"><b>'+esc(x.user)+'</b>'+esc(x.message)+'</div>').join('')+'</div></section>'+
+    '<section class="panel bottom"><div class="title">LEADERBOARD</div><div class="lb">'+lb.slice(0,5).map(x=>'<span>'+esc(x.rank)+'</span><span>'+esc(x.name)+'</span><span>'+(x.score==null?'--':Number(x.score).toFixed(1))+'</span>').join('')+'</div></section>'+
+  '</div>'
+}
+function focus(s){
+  const i=Math.max(0,Number(s.activeContestant||1)-1),p=(s.contestants||[])[i]||s.host||{};
+  return '<div class="focus"><div class="panel hero"><div class="heroPhoto" '+bg(p)+'></div><div class="heroCopy"><div class="eyebrow">NOW LIVE</div><h1>'+esc(p.name)+'</h1><div class="muted">'+esc(p.handle)+'</div></div></div><div class="panel info"><div class="muted">'+esc(s.challengeTitle)+'</div><div class="bigtime" data-time>'+timer(s)+'</div><p>'+esc(s.challengeDescription)+'</p></div></div>'
+}
+function scores(s){
+  return '<div class="center"><div class="panel results"><div class="muted">OFFICIAL RESULTS</div><h1>LEADERBOARD</h1>'+(s.leaderboard||[]).map(x=>'<div class="rrow"><span>#'+esc(x.rank)+'</span><span>'+esc(x.name)+'</span><span class="pts">'+(x.score==null?'--':Number(x.score).toFixed(1))+'</span></div>').join('')+'</div></div>'
+}
+function special(s,t){
+  return '<div class="center"><div class="special"><div class="logo">FR<i>E</i>Q</div><h1>'+t+'</h1><div class="muted">'+(t==='FINALS'?'THE LAST FLIP':'FREQ PRODUCER CHAMPIONSHIP')+'</div></div></div>'
+}
+function draw(s){
+  state=s;
+  document.getElementById('header').innerHTML=header(s);
+  document.getElementById('foot').textContent=(s.eventTitle||'FREQ PRODUCER CHAMPIONSHIP')+' • '+(s.season||'SEASON 1');
+  const sc=s.scene||'full';
+  document.getElementById('scene').innerHTML=sc==='scores'?scores(s):sc==='break'?special(s,'WE’LL BE RIGHT BACK'):sc==='finals'?special(s,'FINALS'):sc==='full'?full(s):focus(s);
+  const c=s.cue||{};
+  if(Number(c.nonce||0)!==lastCue){lastCue=Number(c.nonce||0);if(c.type&&c.type!=='none')fire(c.type)}
+}
+function fire(t){
+  const map={round_start:['ROUND START','FREQ PRODUCER CHAMPIONSHIP'],contestant:['NEXT PRODUCER','NOW PLAYING'],scores_locked:['SCORES LOCKED','JUDGES HAVE SPOKEN'],timeup:["TIME'S UP",'LOCK YOUR PROJECT'],finals:['FINALS','THE LAST FLIP']};
+  const x=map[t]||[String(t).toUpperCase(),'FREQ'];
+  document.getElementById('cueTitle').textContent=x[0];
+  document.getElementById('cueSub').textContent=x[1];
+  const n=document.getElementById('cue');n.classList.remove('go');void n.offsetWidth;n.classList.add('go')
+}
+function tick(){if(!state)return;document.querySelectorAll('[data-time]').forEach(n=>n.textContent=timer(state))}
+function scale(){const s=document.getElementById('stage'),k=Math.min(innerWidth/1920,innerHeight/1080);s.style.transform='scale('+k+')'}
+addEventListener('resize',scale);scale();
+
+async function poll(){
+  try{
+    const r=await fetch(API,{cache:'no-store'});
+    const d=await r.json();
+    if(d.state)draw(d.state);
+  }catch(e){}
+}
+poll();
+setInterval(poll,900);
+setInterval(tick,200);
+</script>
+</body>
+</html>
