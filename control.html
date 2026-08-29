@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREQ Producer Console</title>
+<title>FREQ Producer Console • Fix v2</title>
 <style>
 :root{
   --bg:#06070a;--panel:#0e1117;--panel2:#121620;--line:#252b38;--line2:#30384a;
@@ -108,13 +108,13 @@ button:active{transform:translateY(0)}
 
 <main class="main">
 <section class="heroBar">
-  <div><h1 id="programLabel">FREQ PROGRAM</h1><div class="heroMeta"><span class="chip">1920×1080 OUTPUT</span><span class="chip">SUPABASE LIVE STATE</span><span class="chip" id="sceneChip">SCENE: FULL SHOW</span></div></div>
+  <div><h1 id="programLabel">FREQ PROGRAM</h1><div class="heroMeta"><span class="chip">1920×1080 OUTPUT</span><span class="chip">SUPABASE LIVE STATE</span><span class="chip">FIX V2</span><span class="chip" id="sceneChip">SCENE: FULL SHOW</span></div></div>
   <div class="heroActions"><button id="goIntro" class="primary">START STREAM INTRO</button><button id="goFull" class="ghost">TAKE FULL SHOW</button></div>
 </section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">PROGRAM</div><h2>LIVE SWITCHER</h2></div><span class="muted">Scene takes are immediate</span></div><div class="body"><div id="switcher" class="switch"></div></div></section>
 
-<section class="card"><div class="head"><div><div class="eyebrow">PRE-SHOW</div><h2>INTRO SCENE</h2></div><button id="takeIntro" class="primary">TAKE INTRO LIVE</button></div>
+<section class="card"><div class="head"><div><div class="eyebrow">PRE-SHOW</div><h2>INTRO SCENE</h2></div><div class="actions"><button id="testIntroAudio" class="ghost">TEST INTRO SOUND</button><button id="testTransitionAudio" class="ghost">TEST TRANSITION</button><button id="takeIntro" class="primary">TAKE INTRO LIVE</button></div></div>
 <div class="body introPanel">
   <div id="introFields" class="grid2"></div>
   <div class="introPreview"><div class="k" id="prevKicker">LIVE BROADCAST</div><h3 id="prevTitle">STREAM<br><span>STARTING SOON</span></h3><div class="sub" id="prevSub">FREQ PRODUCER CHAMPIONSHIP</div><div class="detail" id="prevDetail">TOP 8 BATTLES • SEASON 1</div></div>
@@ -166,14 +166,31 @@ el('ltTitle').value=draft.lowerThird.title||'';el('ltSub').value=draft.lowerThir
 function preview(){if(!draft)return;el('prevKicker').textContent=draft.intro?.kicker||'LIVE BROADCAST';const title=draft.intro?.title||'STREAM STARTING SOON';const words=title.split(' ');if(words.length>1){el('prevTitle').innerHTML=esc(words[0])+'<br><span>'+esc(words.slice(1).join(' '))+'</span>'}else el('prevTitle').textContent=title;el('prevSub').textContent=draft.intro?.subtitle||'';el('prevDetail').textContent=draft.intro?.detail||''}
 function bind(){document.querySelectorAll('[data-path]').forEach(n=>n.oninput=()=>{setp(n.dataset.path,n.type==='number'&&n.value!==''?Number(n.value):n.value);if(n.dataset.path.startsWith('intro.'))preview()});document.querySelectorAll('[data-scene]').forEach(n=>n.onclick=()=>take(n.dataset.scene));document.querySelectorAll('[data-focus]').forEach(n=>n.onclick=()=>focus(Number(n.dataset.focus)));document.querySelectorAll('[data-ci]').forEach(n=>n.oninput=()=>{draft.contestants[+n.dataset.ci][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-ji]').forEach(n=>n.oninput=()=>{draft.judges[+n.dataset.ji][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-li]').forEach(n=>n.oninput=()=>{draft.leaderboard[+n.dataset.li][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()})}
 async function push(s=draft){ensureDefaults(s);await api({action:'update',state:s});live=clone(s);draft=clone(s);saved();render()}
-async function take(sc){const s=clone(live);ensureDefaults(s);s.scene=sc;if(sc.startsWith('contestant'))s.activeContestant=+sc.replace('contestant','')||1;await push(s)}
+async function take(sc){
+  const s=clone(live);ensureDefaults(s);s.scene=sc;
+  if(sc.startsWith('contestant'))s.activeContestant=+sc.replace('contestant','')||1;
+  if(sc==='intro')s.cue={type:'intro_start',nonce:Number(s.cue?.nonce||0)+1,label:''};
+  await push(s);
+  const confirmed=ensureDefaults(await state());
+  if(confirmed.scene!==sc){
+    alert('Scene switch did not stick. Expected '+sc+' but server returned '+confirmed.scene+'.');
+    live=confirmed;draft=clone(confirmed);render();
+    return;
+  }
+  live=confirmed;draft=clone(confirmed);saved();render();
+}
 async function focus(i){const s=clone(live);s.scene='contestant'+i;s.activeContestant=i;s.cue={type:'contestant',nonce:Number(s.cue?.nonce||0)+1};await push(s)}
 async function cue(t){const s=clone(live);s.cue={type:t,nonce:Number(s.cue?.nonce||0)+1};await push(s)}
 async function timer(a){const s=clone(live),t=s.timer||{durationSeconds:1200,remainingSeconds:1200,running:false,startedAt:null},r=effective();if(a==='start'&&!t.running){t.remainingSeconds=r;t.startedAt=new Date().toISOString();t.running=true}else if(a==='pause'){t.remainingSeconds=r;t.startedAt=null;t.running=false}else if(a==='reset'){t.durationSeconds=1200;t.remainingSeconds=1200;t.startedAt=null;t.running=false}else if(a==='plus'){t.remainingSeconds=r+30;t.startedAt=t.running?new Date().toISOString():null}else if(a==='minus'){t.remainingSeconds=Math.max(0,r-30);t.startedAt=t.running?new Date().toISOString():null}s.timer=t;await push(s)}
 function tick(){if(!live)return;el('clock').textContent=tt(effective());el('timerState').textContent=live.timer?.running?'RUNNING':'PAUSED'}
 el('loginForm').onsubmit=async e=>{e.preventDefault();el('loginErr').textContent='';try{const d=await api({action:'login',username:el('user').value,password:el('pass').value});token=d.token;localStorage.setItem('freq_token',token);live=ensureDefaults(await state());draft=clone(live);el('loginShell').classList.add('hidden');el('app').classList.remove('hidden');render();saved()}catch(x){el('loginErr').textContent=x.message}};
 el('logout').onclick=async()=>{try{await api({action:'logout'})}catch{}localStorage.removeItem('freq_token');location.reload()};
-el('push').onclick=()=>push().catch(e=>alert(e.message));el('goIntro').onclick=()=>take('intro');el('takeIntro').onclick=()=>take('intro');el('goFull').onclick=()=>take('full');
+el('push').onclick=()=>push().catch(e=>alert(e.message));
+el('goIntro').onclick=()=>take('intro');
+el('takeIntro').onclick=()=>take('intro');
+el('goFull').onclick=()=>take('full');
+el('testIntroAudio').onclick=()=>cue('audio_test_intro');
+el('testTransitionAudio').onclick=()=>cue('audio_test_transition');
 el('start').onclick=()=>timer('start');el('pause').onclick=()=>timer('pause');el('reset').onclick=()=>timer('reset');el('minus').onclick=()=>timer('minus');el('plus').onclick=()=>timer('plus');
 document.querySelectorAll('[data-cue]').forEach(n=>n.onclick=()=>cue(n.dataset.cue));
 el('sort').onclick=()=>{draft.leaderboard=(draft.contestants||[]).filter(x=>x.score!=null).slice().sort((a,b)=>b.score-a.score).map((x,i)=>({rank:i+1,name:x.name,score:+x.score}));mark();render()};
