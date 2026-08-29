@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREQ Producer Console • v5</title>
+<title>FREQ Producer Console • v6</title>
 <style>
 :root{
   --bg:#06070a;--panel:#0e1117;--panel2:#121620;--line:#252b38;--line2:#30384a;
@@ -109,7 +109,7 @@ button:active{transform:translateY(0)}
 <main class="main">
 <section class="heroBar">
   <div><h1 id="programLabel">FREQ PROGRAM</h1><div class="heroMeta"><span class="chip">1920×1080 OUTPUT</span><span class="chip">SUPABASE LIVE STATE</span><span class="chip">FIX V2</span><span class="chip" id="sceneChip">SCENE: FULL SHOW</span></div></div>
-  <div class="heroActions"><button id="goIntro" class="primary">START STREAM INTRO</button><button id="goFull" class="ghost">TAKE FULL SHOW</button></div>
+  <div class="heroActions"><button id="goIntro" class="primary">START STREAM INTRO</button><button id="goListening" class="ghost">TAKE LISTENING</button><button id="goFull" class="ghost">TAKE FULL SHOW</button></div>
 </section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">PROGRAM</div><h2>LIVE SWITCHER</h2></div><span class="muted">Scene takes are immediate</span></div><div class="body"><div id="switcher" class="switch"></div></div></section>
@@ -119,6 +119,9 @@ button:active{transform:translateY(0)}
   <div id="introFields" class="grid2"></div>
   <div class="introPreview"><div class="k" id="prevKicker">LIVE BROADCAST</div><h3 id="prevTitle">STREAM<br><span>STARTING SOON</span></h3><div class="sub" id="prevSub">FREQ PRODUCER CHAMPIONSHIP</div><div class="detail" id="prevDetail">TOP 8 BATTLES • SEASON 1</div></div>
 </div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">TRACK REVIEW</div><h2>LISTENING SCENE</h2></div><button id="takeListening" class="primary">TAKE LISTENING LIVE</button></div>
+<div class="body grid3" id="listeningFields"></div></section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">LIVE FX</div><h2>ANIMATION CUES</h2></div></div><div class="body"><div class="cueGrid">
 <button class="cue" data-cue="round_start">ROUND START</button><button class="cue" data-cue="contestant">CONTESTANT</button><button class="cue" data-cue="scores_locked">SCORES LOCKED</button><button class="cue" data-cue="timeup">TIME'S UP</button><button class="cue" data-cue="finals">FINALS</button>
@@ -161,7 +164,7 @@ button:active{transform:translateY(0)}
 
 <script>
 const API='https://ahidmhrotfetcxdwoxmn.supabase.co/functions/v1/freq-live';
-const scenes=[['intro','INTRO'],['full','FULL SHOW'],['host','HOST'],['contestant1','CONTESTANT 1'],['contestant2','CONTESTANT 2'],['contestant3','CONTESTANT 3'],['contestant4','CONTESTANT 4'],['judges','JUDGES'],['scores','SCORES'],['upnext','UP NEXT'],['break','BREAK'],['finals','FINALS']];
+const scenes=[['intro','INTRO'],['full','FULL SHOW'],['listening','LISTENING'],['host','HOST'],['contestant1','CONTESTANT 1'],['contestant2','CONTESTANT 2'],['contestant3','CONTESTANT 3'],['contestant4','CONTESTANT 4'],['judges','JUDGES'],['scores','SCORES'],['upnext','UP NEXT'],['break','BREAK'],['finals','FINALS']];
 let token=localStorage.getItem('freq_token')||'',live=null,draft=null;
 const el=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x));
 async function api(body){const h={'Content-Type':'application/json'};if(token)h.Authorization='Bearer '+token;const r=await fetch(API,{method:'POST',headers:h,body:JSON.stringify(body)});const d=await r.json().catch(()=>({error:'Request failed'}));if(!r.ok)throw new Error(d.error||'Request failed');return d}
@@ -170,6 +173,13 @@ function ensureDefaults(s){
   s.intro??={};s.intro.kicker??='LIVE BROADCAST';s.intro.title??='STREAM STARTING SOON';s.intro.subtitle??='FREQ PRODUCER CHAMPIONSHIP';s.intro.detail??='TOP 8 BATTLES • SEASON 1';
   s.lowerThird??={title:'DREXIS',subtitle:'HOST',visible:false};
   s.host??={};s.host.name??='HOST';s.host.handle??='';s.host.image??='';s.host.camUrl??='';
+  s.listening??={};
+  s.listening.kicker??='NOW LISTENING';
+  s.listening.title??='TRACK REVIEW';
+  s.listening.subtitle??='HOST + JUDGES';
+  s.listening.producerName??=(s.contestants?.[(Math.max(1,Number(s.activeContestant||1))-1)]?.name||'CURRENT PRODUCER');
+  s.listening.trackTitle??='UNTITLED DEMO';
+  s.listening.detail??='LIVE JUDGE REACTIONS';
   s.upNext??={};
   const legacy=Math.max(0,Number(s.upNext.countdown??45)||0);
   if(s.upNext.durationSeconds==null)s.upNext.durationSeconds=legacy;
@@ -196,6 +206,14 @@ el('sideScenes').innerHTML=scenes.map((x,i)=>'<button class="sceneBtn '+(cur===x
 el('switcher').innerHTML=scenes.map(x=>'<button class="take '+(cur===x[0]?'on ':'')+(x[0]==='intro'?'intro':'')+'" data-scene="'+x[0]+'">'+x[1]+'</button>').join('');
 el('introFields').innerHTML=field('KICKER','intro.kicker')+field('HEADLINE','intro.title')+field('SUBTITLE','intro.subtitle')+field('DETAIL LINE','intro.detail');
 el('showFields').innerHTML=field('EVENT TITLE','eventTitle')+field('SEASON','season')+field('PRESENTED BY','presentedBy')+field('ROUND','round')+field('PHASE','phase')+field('CHALLENGE','challengeTitle')+field('DESCRIPTION','challengeDescription')+field('BPM','bpm','number')+field('KEY','key')+field('SAMPLE PACK','samplePack')+field('SAMPLE BY','sampleBy')+field('BRACKET','bracket');
+
+if(el('listeningFields')) el('listeningFields').innerHTML=
+  field('KICKER','listening.kicker')+
+  field('TITLE','listening.title')+
+  field('SUBTITLE','listening.subtitle')+
+  field('PRODUCER NAME','listening.producerName')+
+  field('TRACK TITLE','listening.trackTitle')+
+  field('DETAIL LINE','listening.detail');
 el('hostFields').innerHTML=
   field('HOST NAME','host.name')+
   field('HOST HANDLE','host.handle')+
@@ -261,6 +279,8 @@ el('logout').onclick=async()=>{try{await api({action:'logout'})}catch{}localStor
 el('push').onclick=()=>push().catch(e=>alert(e.message));
 el('goIntro').onclick=()=>take('intro');
 el('takeIntro').onclick=()=>take('intro');
+el('goListening').onclick=()=>take('listening');
+el('takeListening').onclick=()=>take('listening');
 el('goFull').onclick=()=>take('full');el('takeHost').onclick=()=>take('host');el('takeUpNext').onclick=()=>take('upnext');
 el('upNextStart').onclick=()=>upNextTimer('start');el('upNextPause').onclick=()=>upNextTimer('pause');el('upNextReset').onclick=()=>upNextTimer('reset');el('upNextMinus').onclick=()=>upNextTimer('minus');el('upNextPlus').onclick=()=>upNextTimer('plus');
 el('testIntroAudio').onclick=()=>cue('audio_test_intro');
