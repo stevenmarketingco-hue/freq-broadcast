@@ -5,117 +5,147 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FREQ Producer Console</title>
 <style>
+:root{
+  --bg:#06070a;--panel:#0e1117;--panel2:#121620;--line:#252b38;--line2:#30384a;
+  --text:#f7f9ff;--muted:#8f98aa;--accent:#536cff;--accent2:#7a5cff;
+  --green:#42d993;--amber:#f3bd57;--red:#ff667d;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#07080a;color:#f7f8fb;font-family:Arial,Helvetica,sans-serif}
+html{background:var(--bg)}
+body{margin:0;background:
+ radial-gradient(circle at 30% -10%,rgba(83,108,255,.12),transparent 30%),
+ linear-gradient(180deg,#07080b,#050609 70%);color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
 button,input,select{font:inherit}.hidden{display:none!important}
-.loginShell{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0,rgba(83,108,255,.12),transparent 38%)}
-.login{width:min(430px,94vw);background:#101217;border:1px solid #292e38;border-radius:18px;padding:28px}
-.brand{font-size:48px;font-weight:1000;letter-spacing:-4px}.brand i{font-style:normal;color:#536cff}
-.tag{font-size:11px;letter-spacing:2px;color:#7185ff}.muted{color:#8f96a6;font-size:12px;line-height:1.5}
-.field{display:grid;gap:6px;margin-top:14px}.field label{font-size:10px;color:#9299aa;letter-spacing:1px}
-.field input,.field select,.small{width:100%;background:#090a0e;border:1px solid #303541;border-radius:8px;color:white;padding:10px}
-.primary,.ghost,.scene,.cue{cursor:pointer;border-radius:8px;font-weight:900}
-.primary{border:0;background:#536cff;color:white;padding:11px 15px}
-.ghost,.scene,.cue{border:1px solid #303541;background:#11141a;color:#fff;padding:10px 12px}
-.login .primary{width:100%;margin-top:18px}.error{color:#ff8292;font-size:12px;min-height:16px;margin-top:10px}
-.top{position:sticky;top:0;z-index:10;height:64px;background:#0a0b0f;border-bottom:1px solid #20242d;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
-.topL,.topR{display:flex;align-items:center;gap:10px}.mini{font-size:26px;font-weight:1000;letter-spacing:-3px}.mini i{font-style:normal;color:#536cff}
-.layout{display:grid;grid-template-columns:245px 1fr}.side{border-right:1px solid #20242d;padding:15px;min-height:calc(100vh - 64px)}
-.sideTitle{font-size:10px;color:#737b8c;letter-spacing:2px;margin:8px 0}.scene{width:100%;text-align:left;margin-bottom:7px;font-size:11px}.scene.on{border-color:#536cff;background:#171d31}
-.main{padding:18px}.card{background:#0f1116;border:1px solid #252a34;border-radius:12px;margin-bottom:14px;overflow:hidden}
-.head{padding:13px 15px;border-bottom:1px solid #252a34;display:flex;justify-content:space-between;align-items:center}.head h2{font-size:13px;margin:0}
-.body{padding:15px}.switch{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.cueGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
-.timer{display:flex;justify-content:space-between;gap:15px;align-items:center}.readout{font-size:58px;letter-spacing:5px}.actions{display:flex;gap:7px;flex-wrap:wrap}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.rows{display:grid;gap:8px}
-.row{display:grid;grid-template-columns:50px 1.2fr 1.2fr 1fr 90px 86px;gap:7px;align-items:center;padding:8px;border:1px solid #262b35;border-radius:9px}
+button{transition:.16s ease}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.loginShell{min-height:100vh;display:grid;place-items:center;padding:20px}
+.login{width:min(440px,94vw);background:rgba(14,17,23,.96);border:1px solid var(--line2);border-radius:22px;padding:30px;box-shadow:0 28px 80px rgba(0,0,0,.45)}
+.brand{font-size:52px;font-weight:1000;letter-spacing:-5px}.brand i{font-style:normal;color:var(--accent)}
+.tag{font-size:10px;letter-spacing:3px;color:#8796ff;margin-top:3px}.muted{color:var(--muted);font-size:12px;line-height:1.5}
+.field{display:grid;gap:7px}.field label{font-size:10px;color:#929bad;letter-spacing:1.3px;font-weight:800}
+.field input,.field select,.small{width:100%;background:#090b10;border:1px solid var(--line2);border-radius:9px;color:#fff;padding:10px 11px;outline:none}
+.field input:focus,.field select:focus,.small:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(83,108,255,.12)}
+.login .field{margin-top:15px}
+.primary,.ghost,.danger,.sceneBtn,.cue,.miniBtn{cursor:pointer;border-radius:9px;font-weight:900}
+.primary{border:0;background:linear-gradient(135deg,var(--accent),#684dff);color:white;padding:11px 16px;box-shadow:0 8px 22px rgba(83,108,255,.18)}
+.ghost{border:1px solid var(--line2);background:#11151d;color:#e6e9f0;padding:10px 13px}
+.danger{border:1px solid rgba(255,102,125,.35);background:rgba(255,102,125,.08);color:#ff8b9c;padding:10px 13px}
+.login .primary{width:100%;margin-top:20px}.error{color:#ff8393;font-size:12px;margin-top:10px;min-height:16px}
+.top{position:sticky;top:0;z-index:30;height:70px;background:rgba(6,7,10,.94);backdrop-filter:blur(18px);border-bottom:1px solid #1f2430;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.topL,.topR{display:flex;align-items:center;gap:10px}.mini{font-size:30px;font-weight:1000;letter-spacing:-3px}.mini i{font-style:normal;color:var(--accent)}
+.liveDot{display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:1.2px;color:var(--muted);padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:#0d1016}
+.liveDot:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 14px rgba(66,217,147,.55)}
+.status.live{color:var(--green)}.status.staged{color:var(--amber)}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr)}
+.side{border-right:1px solid #202531;padding:16px;position:sticky;top:70px;height:calc(100vh - 70px);overflow:auto;background:rgba(8,10,14,.74)}
+.sideTitle{font-size:9px;letter-spacing:2.2px;color:#697386;margin:8px 2px 10px;font-weight:900}
+.sceneBtn{width:100%;display:grid;grid-template-columns:30px 1fr auto;align-items:center;text-align:left;border:1px solid #292f3c;background:#0e1219;color:#d9dde6;padding:10px 11px;margin-bottom:8px;font-size:11px}
+.sceneBtn .num{color:#626d83;font-size:9px}.sceneBtn .sceneTag{font-size:8px;color:#697386;letter-spacing:1px}
+.sceneBtn.on{background:linear-gradient(135deg,rgba(83,108,255,.18),rgba(122,92,255,.08));border-color:#5f72ff;box-shadow:inset 3px 0 #5f72ff}
+.sceneBtn.introBtn{border-color:rgba(83,108,255,.42)}
+.main{padding:18px;min-width:0;max-width:1600px;width:100%;margin:0 auto}
+.heroBar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:linear-gradient(135deg,rgba(83,108,255,.13),rgba(12,15,22,.92) 50%);border:1px solid #2b3344;border-radius:14px;padding:16px 18px;margin-bottom:14px}
+.heroBar h1{font-size:18px;margin:0 0 4px}.heroMeta{display:flex;gap:10px;flex-wrap:wrap}.chip{font-size:9px;letter-spacing:1.2px;color:#99a4b8;border:1px solid #2b3240;background:#0c0f15;border-radius:999px;padding:6px 9px}
+.heroActions{display:flex;gap:8px}
+.card{background:linear-gradient(180deg,rgba(16,19,26,.98),rgba(12,15,21,.98));border:1px solid #252b37;border-radius:13px;margin-bottom:14px;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.13)}
+.head{padding:13px 16px;border-bottom:1px solid #252b37;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.head h2{font-size:12px;letter-spacing:1px;margin:0}.head .eyebrow{font-size:9px;letter-spacing:1.5px;color:#6f788b}
+.body{padding:16px}.switch{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.take{cursor:pointer;border:1px solid #303745;background:#11151d;color:#fff;padding:12px 9px;border-radius:10px;font-size:9px;font-weight:900;letter-spacing:.7px;min-height:50px}
+.take:hover{border-color:#5063d8}.take.on{background:linear-gradient(135deg,#536cff,#654cff);border-color:#6f7fff;box-shadow:0 8px 20px rgba(83,108,255,.2)}
+.take.intro{background:linear-gradient(135deg,rgba(83,108,255,.22),rgba(122,92,255,.12));border-color:#536cff}
+.cueGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.cue{border:1px solid #303745;background:#11151d;color:#fff;padding:11px 8px;font-size:9px}
+.cue:hover{border-color:#536cff;background:#151a26}
+.timer{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+.readout{font-size:64px;letter-spacing:6px;font-weight:300;font-variant-numeric:tabular-nums}
+.actions{display:flex;flex-wrap:wrap;gap:7px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.introPanel{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+.introPreview{min-height:250px;border:1px solid #2b3241;border-radius:12px;background:
+ radial-gradient(circle at 80% 20%,rgba(83,108,255,.24),transparent 30%),
+ linear-gradient(135deg,#0b0d13,#07080b);position:relative;overflow:hidden;padding:26px}
+.introPreview:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 47%,rgba(83,108,255,.08) 50%,transparent 53%);animation:scan 5s linear infinite}
+.introPreview .k{font-size:10px;letter-spacing:3px;color:#7f8fff}.introPreview h3{font-size:38px;line-height:1;margin:42px 0 8px;letter-spacing:-2px}.introPreview h3 span{color:#6678ff}.introPreview .sub{font-size:13px;letter-spacing:2px;color:#a8afbd}.introPreview .detail{position:absolute;bottom:24px;left:26px;color:#697386;font-size:10px;letter-spacing:2px}
+@keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.rows{display:grid;gap:8px}.row{display:grid;grid-template-columns:50px 1.2fr 1.2fr 1fr 90px 86px;gap:7px;align-items:center;padding:8px;border:1px solid #262d39;background:#0d1016;border-radius:10px}
 .judge{grid-template-columns:50px 1fr 100px}.rank{display:grid;grid-template-columns:70px 1fr 120px;gap:7px;margin-bottom:7px}
-.status{font-size:10px;color:#7e8798}.live{color:#47d58a}.staged{color:#f1bd54}
-@media(max-width:950px){.layout{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid #20242d}.switch{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:650px){.grid3{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr}.switch,.cueGrid{grid-template-columns:1fr 1fr}.timer{align-items:flex-start;flex-direction:column}.readout{font-size:42px}.topR a{display:none}}
+.toggleRow{display:flex;align-items:center;gap:10px}.toggle{appearance:none;width:42px;height:24px;border-radius:999px;background:#242a36;border:1px solid #343b49;position:relative;cursor:pointer}.toggle:after{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;border-radius:50%;background:#7e8798;transition:.18s}.toggle:checked{background:#4458d7;border-color:#6678ff}.toggle:checked:after{left:20px;background:white}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid #202531}.switch{grid-template-columns:repeat(3,1fr)}.introPanel{grid-template-columns:1fr}}
+@media(max-width:720px){.main{padding:10px}.grid2,.grid3{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr}.timer{grid-template-columns:1fr}.readout{font-size:44px}.switch,.cueGrid{grid-template-columns:1fr 1fr}.topR a{display:none}.heroBar{grid-template-columns:1fr}.heroActions{flex-wrap:wrap}}
 </style>
 </head>
 <body>
 <div id="loginShell" class="loginShell">
   <form id="loginForm" class="login">
-    <div class="brand">FR<i>E</i>Q</div>
-    <div class="tag">PRODUCER CONTROL</div>
-    <h1>Sign in</h1>
-    <p class="muted">Private broadcast control console.</p>
+    <div class="brand">FR<i>E</i>Q</div><div class="tag">PRODUCER CONTROL</div>
+    <h1>Broadcast Control</h1><p class="muted">Private control surface for the live FREQ broadcast.</p>
     <div class="field"><label>USERNAME</label><input id="user" value="admin" autocomplete="username"></div>
     <div class="field"><label>PASSWORD</label><input id="pass" type="password" autocomplete="current-password" required></div>
-    <button class="primary" type="submit">SIGN IN</button>
-    <div id="loginErr" class="error"></div>
+    <button class="primary" type="submit">SIGN IN</button><div id="loginErr" class="error"></div>
   </form>
 </div>
 
 <div id="app" class="hidden">
 <header class="top">
-  <div class="topL"><div class="mini">FR<i>E</i>Q</div><span id="saveStatus" class="status live">LIVE</span></div>
+  <div class="topL"><div class="mini">FR<i>E</i>Q</div><span class="liveDot">LIVE SYNC</span><span id="saveStatus" class="status live">LIVE</span></div>
   <div class="topR">
     <a class="ghost" style="text-decoration:none" href="./overlay.html" target="_blank" rel="noopener">OPEN OVERLAY</a>
-    <button id="logout" class="ghost">SIGN OUT</button>
-    <button id="push" class="primary">PUSH LIVE</button>
+    <button id="logout" class="ghost">SIGN OUT</button><button id="push" class="primary">PUSH LIVE</button>
   </div>
 </header>
 
 <div class="layout">
 <aside class="side">
-  <div class="sideTitle">SCENES</div>
-  <div id="sideScenes"></div>
-  <div class="sideTitle" style="margin-top:18px">CUES</div>
-  <button class="scene" data-cue="round_start">ROUND START</button>
-  <button class="scene" data-cue="contestant">CONTESTANT STINGER</button>
-  <button class="scene" data-cue="scores_locked">SCORES LOCKED</button>
-  <button class="scene" data-cue="timeup">TIME'S UP</button>
-  <button class="scene" data-cue="finals">FINALS</button>
+  <div class="sideTitle">PROGRAM SCENES</div><div id="sideScenes"></div>
+  <div class="sideTitle" style="margin-top:18px">STINGERS / CUES</div>
+  <button class="sceneBtn" data-cue="round_start"><span class="num">FX</span><span>ROUND START</span><span class="sceneTag">CUE</span></button>
+  <button class="sceneBtn" data-cue="contestant"><span class="num">FX</span><span>CONTESTANT STINGER</span><span class="sceneTag">CUE</span></button>
+  <button class="sceneBtn" data-cue="scores_locked"><span class="num">FX</span><span>SCORES LOCKED</span><span class="sceneTag">CUE</span></button>
+  <button class="sceneBtn" data-cue="timeup"><span class="num">FX</span><span>TIME'S UP</span><span class="sceneTag">CUE</span></button>
+  <button class="sceneBtn" data-cue="finals"><span class="num">FX</span><span>FINALS</span><span class="sceneTag">CUE</span></button>
 </aside>
 
 <main class="main">
-<section class="card"><div class="head"><h2>LIVE SWITCHER</h2></div><div class="body"><div id="switcher" class="switch"></div></div></section>
-<section class="card"><div class="head"><h2>ANIMATION CUES</h2></div><div class="body"><div class="cueGrid">
-  <button class="cue" data-cue="round_start">ROUND START</button>
-  <button class="cue" data-cue="contestant">CONTESTANT</button>
-  <button class="cue" data-cue="scores_locked">SCORES LOCKED</button>
-  <button class="cue" data-cue="timeup">TIME'S UP</button>
-  <button class="cue" data-cue="finals">FINALS</button>
-</div></div></section>
-<section class="card"><div class="head"><h2>MASTER TIMER</h2><span id="timerState" class="muted">PAUSED</span></div><div class="body">
-  <div class="timer"><div id="clock" class="readout">20:00</div><div class="actions">
-    <button id="start" class="primary">START</button>
-    <button id="pause" class="ghost">PAUSE</button>
-    <button id="reset" class="ghost">RESET</button>
-    <button id="minus" class="ghost">−30s</button>
-    <button id="plus" class="ghost">+30s</button>
-  </div></div>
+<section class="heroBar">
+  <div><h1 id="programLabel">FREQ PROGRAM</h1><div class="heroMeta"><span class="chip">1920×1080 OUTPUT</span><span class="chip">SUPABASE LIVE STATE</span><span class="chip" id="sceneChip">SCENE: FULL SHOW</span></div></div>
+  <div class="heroActions"><button id="goIntro" class="primary">START STREAM INTRO</button><button id="goFull" class="ghost">TAKE FULL SHOW</button></div>
+</section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">PROGRAM</div><h2>LIVE SWITCHER</h2></div><span class="muted">Scene takes are immediate</span></div><div class="body"><div id="switcher" class="switch"></div></div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">PRE-SHOW</div><h2>INTRO SCENE</h2></div><button id="takeIntro" class="primary">TAKE INTRO LIVE</button></div>
+<div class="body introPanel">
+  <div id="introFields" class="grid2"></div>
+  <div class="introPreview"><div class="k" id="prevKicker">LIVE BROADCAST</div><h3 id="prevTitle">STREAM<br><span>STARTING SOON</span></h3><div class="sub" id="prevSub">FREQ PRODUCER CHAMPIONSHIP</div><div class="detail" id="prevDetail">TOP 8 BATTLES • SEASON 1</div></div>
 </div></section>
-<section class="card"><div class="head"><h2>SHOW INFO</h2></div><div id="showFields" class="body grid3"></div></section>
-<section class="card"><div class="head"><h2>CONTESTANTS</h2></div><div id="contestants" class="body rows"></div></section>
-<section class="card"><div class="head"><h2>JUDGES</h2></div><div id="judges" class="body rows"></div></section>
-<section class="card"><div class="head"><h2>LEADERBOARD</h2><button id="sort" class="ghost">SORT FROM SCORES</button></div><div id="leaderboard" class="body"></div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">LIVE FX</div><h2>ANIMATION CUES</h2></div></div><div class="body"><div class="cueGrid">
+<button class="cue" data-cue="round_start">ROUND START</button><button class="cue" data-cue="contestant">CONTESTANT</button><button class="cue" data-cue="scores_locked">SCORES LOCKED</button><button class="cue" data-cue="timeup">TIME'S UP</button><button class="cue" data-cue="finals">FINALS</button>
+</div></div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">CLOCK</div><h2>MASTER TIMER</h2></div><span id="timerState" class="muted">PAUSED</span></div><div class="body"><div class="timer"><div id="clock" class="readout">20:00</div><div class="actions"><button id="start" class="primary">START</button><button id="pause" class="ghost">PAUSE</button><button id="reset" class="ghost">RESET 20:00</button><button id="minus" class="ghost">−30s</button><button id="plus" class="ghost">+30s</button></div></div></div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">EVENT</div><h2>SHOW INFO</h2></div></div><div id="showFields" class="body grid3"></div></section>
+<section class="card"><div class="head"><div><div class="eyebrow">TALENT</div><h2>CONTESTANTS</h2></div></div><div class="body rows" id="contestants"></div></section>
+<section class="card"><div class="head"><div><div class="eyebrow">PANEL</div><h2>JUDGES</h2></div></div><div class="body rows" id="judges"></div></section>
+<section class="card"><div class="head"><div><div class="eyebrow">RESULTS</div><h2>LEADERBOARD</h2></div><button id="sort" class="ghost">SORT FROM SCORES</button></div><div class="body" id="leaderboard"></div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">GRAPHICS</div><h2>LOWER THIRD</h2></div></div><div class="body grid3">
+<div class="field"><label>TITLE</label><input id="ltTitle"></div><div class="field"><label>SUBTITLE</label><input id="ltSub"></div><div class="field"><label>VISIBILITY</label><div class="toggleRow"><input class="toggle" id="ltVisible" type="checkbox"><span class="muted">Show on overlay</span></div></div>
+</div></section>
 </main>
 </div>
 </div>
 
 <script>
 const API='https://ahidmhrotfetcxdwoxmn.supabase.co/functions/v1/freq-live';
-const scenes=[['full','FULL SHOW'],['host','HOST'],['contestant1','CONTESTANT 1'],['contestant2','CONTESTANT 2'],['contestant3','CONTESTANT 3'],['contestant4','CONTESTANT 4'],['judges','JUDGES'],['scores','SCORES'],['upnext','UP NEXT'],['break','BREAK'],['finals','FINALS']];
+const scenes=[['intro','INTRO'],['full','FULL SHOW'],['host','HOST'],['contestant1','CONTESTANT 1'],['contestant2','CONTESTANT 2'],['contestant3','CONTESTANT 3'],['contestant4','CONTESTANT 4'],['judges','JUDGES'],['scores','SCORES'],['upnext','UP NEXT'],['break','BREAK'],['finals','FINALS']];
 let token=localStorage.getItem('freq_token')||'',live=null,draft=null;
-const el=id=>document.getElementById(id), clone=x=>JSON.parse(JSON.stringify(x));
-
-async function api(body){
-  const h={'Content-Type':'application/json'};
-  if(token) h.Authorization='Bearer '+token;
-  const r=await fetch(API,{method:'POST',headers:h,body:JSON.stringify(body)});
-  const d=await r.json().catch(()=>({error:'Request failed'}));
-  if(!r.ok) throw new Error(d.error||'Request failed');
-  return d;
-}
-async function state(){
-  const r=await fetch(API+'?api=state',{cache:'no-store'});
-  const d=await r.json();
-  if(!r.ok) throw new Error(d.error||'Could not load state');
-  return d.state;
-}
+const el=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x));
+async function api(body){const h={'Content-Type':'application/json'};if(token)h.Authorization='Bearer '+token;const r=await fetch(API,{method:'POST',headers:h,body:JSON.stringify(body)});const d=await r.json().catch(()=>({error:'Request failed'}));if(!r.ok)throw new Error(d.error||'Request failed');return d}
+async function state(){const r=await fetch(API+'?api=state',{cache:'no-store'}),d=await r.json();if(!r.ok)throw new Error(d.error||'Could not load state');return d.state}
+function ensureDefaults(s){s.intro??={};s.intro.kicker??='LIVE BROADCAST';s.intro.title??='STREAM STARTING SOON';s.intro.subtitle??='FREQ PRODUCER CHAMPIONSHIP';s.intro.detail??='TOP 8 BATTLES • SEASON 1';s.lowerThird??={title:'DREXIS',subtitle:'HOST',visible:false};return s}
 function get(p){return p.split('.').reduce((a,k)=>a&&a[k],draft)}
 function setp(p,v){const a=p.split('.');let x=draft;for(let i=0;i<a.length-1;i++){x[a[i]]??={};x=x[a[i]]}x[a.at(-1)]=v;mark()}
 function mark(){el('saveStatus').textContent='STAGED';el('saveStatus').className='status staged'}
@@ -124,95 +154,32 @@ function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('"','&qu
 function field(l,p,t='text'){return '<div class="field"><label>'+l+'</label><input data-path="'+p+'" type="'+t+'" value="'+esc(get(p))+'"></div>'}
 function effective(){const t=live?.timer||{};let r=Number(t.remainingSeconds||0);if(t.running&&t.startedAt)r-=Math.max(0,(Date.now()-new Date(t.startedAt).getTime())/1000);return Math.max(0,r)}
 function tt(x){x=Math.max(0,Math.ceil(x));return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}
-
-function render(){
-  if(!draft)return;
-  const cur=live.scene||'full';
-  el('sideScenes').innerHTML=scenes.map(x=>'<button class="scene '+(cur===x[0]?'on':'')+'" data-scene="'+x[0]+'">'+x[1]+'</button>').join('');
-  el('switcher').innerHTML=scenes.map(x=>'<button class="scene '+(cur===x[0]?'on':'')+'" data-scene="'+x[0]+'">'+x[1]+'</button>').join('');
-  el('showFields').innerHTML=
-    field('EVENT TITLE','eventTitle')+field('SEASON','season')+field('PRESENTED BY','presentedBy')+
-    field('ROUND','round')+field('PHASE','phase')+field('CHALLENGE','challengeTitle')+
-    field('BPM','bpm','number')+field('KEY','key')+field('SAMPLE PACK','samplePack')+
-    field('SAMPLE BY','sampleBy')+field('BRACKET','bracket');
-
-  el('contestants').innerHTML=(draft.contestants||[]).map((c,i)=>
-    '<div class="row"><span>#'+(i+1)+'</span>'+
-    '<input class="small" data-ci="'+i+'" data-k="name" value="'+esc(c.name)+'">'+
-    '<input class="small" data-ci="'+i+'" data-k="handle" value="'+esc(c.handle)+'">'+
-    '<select class="small" data-ci="'+i+'" data-k="status">'+
-      '<option '+(c.status==='IN PROGRESS'?'selected':'')+'>IN PROGRESS</option>'+
-      '<option '+(c.status==='WAITING'?'selected':'')+'>WAITING</option>'+
-      '<option '+(c.status==='DONE'?'selected':'')+'>DONE</option>'+
-      '<option '+(c.status==='ELIMINATED'?'selected':'')+'>ELIMINATED</option>'+
-    '</select>'+
-    '<input class="small" type="number" step=".1" data-ci="'+i+'" data-k="score" value="'+(c.score??'')+'">'+
-    '<button class="ghost" data-focus="'+(i+1)+'">FOCUS</button></div>'
-  ).join('');
-
-  el('judges').innerHTML=(draft.judges||[]).map((j,i)=>
-    '<div class="row judge"><span>'+(i+1)+'</span>'+
-    '<input class="small" data-ji="'+i+'" data-k="name" value="'+esc(j.name)+'">'+
-    '<input class="small" type="number" step=".1" min="0" max="10" data-ji="'+i+'" data-k="score" value="'+(j.score??'')+'"></div>'
-  ).join('');
-
-  el('leaderboard').innerHTML=(draft.leaderboard||[]).map((x,i)=>
-    '<div class="rank">'+
-    '<input class="small" type="number" data-li="'+i+'" data-k="rank" value="'+(x.rank||i+1)+'">'+
-    '<input class="small" data-li="'+i+'" data-k="name" value="'+esc(x.name)+'">'+
-    '<input class="small" type="number" step=".1" data-li="'+i+'" data-k="score" value="'+(x.score??'')+'"></div>'
-  ).join('');
-  bind();
-}
-
-function bind(){
-  document.querySelectorAll('[data-path]').forEach(n=>n.oninput=()=>setp(n.dataset.path,n.type==='number'&&n.value!==''?Number(n.value):n.value));
-  document.querySelectorAll('[data-scene]').forEach(n=>n.onclick=()=>take(n.dataset.scene));
-  document.querySelectorAll('[data-focus]').forEach(n=>n.onclick=()=>focus(Number(n.dataset.focus)));
-  document.querySelectorAll('[data-ci]').forEach(n=>n.oninput=()=>{draft.contestants[+n.dataset.ci][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});
-  document.querySelectorAll('[data-ji]').forEach(n=>n.oninput=()=>{draft.judges[+n.dataset.ji][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});
-  document.querySelectorAll('[data-li]').forEach(n=>n.oninput=()=>{draft.leaderboard[+n.dataset.li][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});
-}
-
-async function push(s=draft){await api({action:'update',state:s});live=clone(s);draft=clone(s);saved();render()}
-async function take(sc){const s=clone(live);s.scene=sc;if(sc.startsWith('contestant'))s.activeContestant=+sc.replace('contestant','')||1;await push(s)}
+function render(){if(!draft)return;ensureDefaults(draft);ensureDefaults(live);const cur=live.scene||'full';el('programLabel').textContent=(draft.eventTitle||'FREQ PRODUCER CHAMPIONSHIP');el('sceneChip').textContent='SCENE: '+String(cur).replaceAll('_',' ').toUpperCase();
+el('sideScenes').innerHTML=scenes.map((x,i)=>'<button class="sceneBtn '+(cur===x[0]?'on ':'')+(x[0]==='intro'?'introBtn':'')+'" data-scene="'+x[0]+'"><span class="num">'+String(i+1).padStart(2,'0')+'</span><span>'+x[1]+'</span><span class="sceneTag">'+(cur===x[0]?'LIVE':'TAKE')+'</span></button>').join('');
+el('switcher').innerHTML=scenes.map(x=>'<button class="take '+(cur===x[0]?'on ':'')+(x[0]==='intro'?'intro':'')+'" data-scene="'+x[0]+'">'+x[1]+'</button>').join('');
+el('introFields').innerHTML=field('KICKER','intro.kicker')+field('HEADLINE','intro.title')+field('SUBTITLE','intro.subtitle')+field('DETAIL LINE','intro.detail');
+el('showFields').innerHTML=field('EVENT TITLE','eventTitle')+field('SEASON','season')+field('PRESENTED BY','presentedBy')+field('ROUND','round')+field('PHASE','phase')+field('CHALLENGE','challengeTitle')+field('DESCRIPTION','challengeDescription')+field('BPM','bpm','number')+field('KEY','key')+field('SAMPLE PACK','samplePack')+field('SAMPLE BY','sampleBy')+field('BRACKET','bracket');
+el('contestants').innerHTML=(draft.contestants||[]).map((c,i)=>'<div class="row"><span class="muted">#'+String(i+1).padStart(2,'0')+'</span><input class="small" data-ci="'+i+'" data-k="name" value="'+esc(c.name)+'"><input class="small" data-ci="'+i+'" data-k="handle" value="'+esc(c.handle)+'"><select class="small" data-ci="'+i+'" data-k="status"><option '+(c.status==='IN PROGRESS'?'selected':'')+'>IN PROGRESS</option><option '+(c.status==='WAITING'?'selected':'')+'>WAITING</option><option '+(c.status==='DONE'?'selected':'')+'>DONE</option><option '+(c.status==='ELIMINATED'?'selected':'')+'>ELIMINATED</option></select><input class="small" type="number" step=".1" data-ci="'+i+'" data-k="score" value="'+(c.score??'')+'"><button class="ghost" data-focus="'+(i+1)+'">FOCUS</button></div>').join('');
+el('judges').innerHTML=(draft.judges||[]).map((j,i)=>'<div class="row judge"><span class="muted">'+(i+1)+'</span><input class="small" data-ji="'+i+'" data-k="name" value="'+esc(j.name)+'"><input class="small" type="number" step=".1" min="0" max="10" data-ji="'+i+'" data-k="score" value="'+(j.score??'')+'"></div>').join('');
+el('leaderboard').innerHTML=(draft.leaderboard||[]).map((x,i)=>'<div class="rank"><input class="small" type="number" data-li="'+i+'" data-k="rank" value="'+(x.rank||i+1)+'"><input class="small" data-li="'+i+'" data-k="name" value="'+esc(x.name)+'"><input class="small" type="number" step=".1" data-li="'+i+'" data-k="score" value="'+(x.score??'')+'"></div>').join('');
+el('ltTitle').value=draft.lowerThird.title||'';el('ltSub').value=draft.lowerThird.subtitle||'';el('ltVisible').checked=!!draft.lowerThird.visible;preview();bind()}
+function preview(){if(!draft)return;el('prevKicker').textContent=draft.intro?.kicker||'LIVE BROADCAST';const title=draft.intro?.title||'STREAM STARTING SOON';const words=title.split(' ');if(words.length>1){el('prevTitle').innerHTML=esc(words[0])+'<br><span>'+esc(words.slice(1).join(' '))+'</span>'}else el('prevTitle').textContent=title;el('prevSub').textContent=draft.intro?.subtitle||'';el('prevDetail').textContent=draft.intro?.detail||''}
+function bind(){document.querySelectorAll('[data-path]').forEach(n=>n.oninput=()=>{setp(n.dataset.path,n.type==='number'&&n.value!==''?Number(n.value):n.value);if(n.dataset.path.startsWith('intro.'))preview()});document.querySelectorAll('[data-scene]').forEach(n=>n.onclick=()=>take(n.dataset.scene));document.querySelectorAll('[data-focus]').forEach(n=>n.onclick=()=>focus(Number(n.dataset.focus)));document.querySelectorAll('[data-ci]').forEach(n=>n.oninput=()=>{draft.contestants[+n.dataset.ci][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-ji]').forEach(n=>n.oninput=()=>{draft.judges[+n.dataset.ji][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-li]').forEach(n=>n.oninput=()=>{draft.leaderboard[+n.dataset.li][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()})}
+async function push(s=draft){ensureDefaults(s);await api({action:'update',state:s});live=clone(s);draft=clone(s);saved();render()}
+async function take(sc){const s=clone(live);ensureDefaults(s);s.scene=sc;if(sc.startsWith('contestant'))s.activeContestant=+sc.replace('contestant','')||1;await push(s)}
 async function focus(i){const s=clone(live);s.scene='contestant'+i;s.activeContestant=i;s.cue={type:'contestant',nonce:Number(s.cue?.nonce||0)+1};await push(s)}
 async function cue(t){const s=clone(live);s.cue={type:t,nonce:Number(s.cue?.nonce||0)+1};await push(s)}
-async function timer(a){
-  const s=clone(live),t=s.timer||{durationSeconds:1200,remainingSeconds:1200,running:false,startedAt:null},r=effective();
-  if(a==='start'&&!t.running){t.remainingSeconds=r;t.startedAt=new Date().toISOString();t.running=true}
-  else if(a==='pause'){t.remainingSeconds=r;t.startedAt=null;t.running=false}
-  else if(a==='reset'){t.durationSeconds=1200;t.remainingSeconds=1200;t.startedAt=null;t.running=false}
-  else if(a==='plus'){t.remainingSeconds=r+30;t.startedAt=t.running?new Date().toISOString():null}
-  else if(a==='minus'){t.remainingSeconds=Math.max(0,r-30);t.startedAt=t.running?new Date().toISOString():null}
-  s.timer=t;await push(s)
-}
+async function timer(a){const s=clone(live),t=s.timer||{durationSeconds:1200,remainingSeconds:1200,running:false,startedAt:null},r=effective();if(a==='start'&&!t.running){t.remainingSeconds=r;t.startedAt=new Date().toISOString();t.running=true}else if(a==='pause'){t.remainingSeconds=r;t.startedAt=null;t.running=false}else if(a==='reset'){t.durationSeconds=1200;t.remainingSeconds=1200;t.startedAt=null;t.running=false}else if(a==='plus'){t.remainingSeconds=r+30;t.startedAt=t.running?new Date().toISOString():null}else if(a==='minus'){t.remainingSeconds=Math.max(0,r-30);t.startedAt=t.running?new Date().toISOString():null}s.timer=t;await push(s)}
 function tick(){if(!live)return;el('clock').textContent=tt(effective());el('timerState').textContent=live.timer?.running?'RUNNING':'PAUSED'}
-
-el('loginForm').onsubmit=async e=>{
-  e.preventDefault();el('loginErr').textContent='';
-  try{
-    const d=await api({action:'login',username:el('user').value,password:el('pass').value});
-    token=d.token;localStorage.setItem('freq_token',token);
-    live=await state();draft=clone(live);
-    el('loginShell').classList.add('hidden');el('app').classList.remove('hidden');render();saved();
-  }catch(x){el('loginErr').textContent=x.message}
-};
+el('loginForm').onsubmit=async e=>{e.preventDefault();el('loginErr').textContent='';try{const d=await api({action:'login',username:el('user').value,password:el('pass').value});token=d.token;localStorage.setItem('freq_token',token);live=ensureDefaults(await state());draft=clone(live);el('loginShell').classList.add('hidden');el('app').classList.remove('hidden');render();saved()}catch(x){el('loginErr').textContent=x.message}};
 el('logout').onclick=async()=>{try{await api({action:'logout'})}catch{}localStorage.removeItem('freq_token');location.reload()};
-el('push').onclick=()=>push().catch(e=>alert(e.message));
+el('push').onclick=()=>push().catch(e=>alert(e.message));el('goIntro').onclick=()=>take('intro');el('takeIntro').onclick=()=>take('intro');el('goFull').onclick=()=>take('full');
 el('start').onclick=()=>timer('start');el('pause').onclick=()=>timer('pause');el('reset').onclick=()=>timer('reset');el('minus').onclick=()=>timer('minus');el('plus').onclick=()=>timer('plus');
 document.querySelectorAll('[data-cue]').forEach(n=>n.onclick=()=>cue(n.dataset.cue));
 el('sort').onclick=()=>{draft.leaderboard=(draft.contestants||[]).filter(x=>x.score!=null).slice().sort((a,b)=>b.score-a.score).map((x,i)=>({rank:i+1,name:x.name,score:+x.score}));mark();render()};
+el('ltTitle').oninput=()=>{draft.lowerThird.title=el('ltTitle').value;mark()};el('ltSub').oninput=()=>{draft.lowerThird.subtitle=el('ltSub').value;mark()};el('ltVisible').onchange=async()=>{const s=clone(live);ensureDefaults(s);s.lowerThird.title=el('ltTitle').value;s.lowerThird.subtitle=el('ltSub').value;s.lowerThird.visible=el('ltVisible').checked;await push(s)};
 setInterval(tick,200);
-
-(async()=>{
-  if(!token)return;
-  try{
-    await api({action:'verify'});
-    live=await state();draft=clone(live);
-    el('loginShell').classList.add('hidden');el('app').classList.remove('hidden');render();saved();
-  }catch{localStorage.removeItem('freq_token')}
-})();
+(async()=>{if(!token)return;try{await api({action:'verify'});live=ensureDefaults(await state());draft=clone(live);el('loginShell').classList.add('hidden');el('app').classList.remove('hidden');render();saved()}catch{localStorage.removeItem('freq_token')}})();
 </script>
 </body>
 </html>
