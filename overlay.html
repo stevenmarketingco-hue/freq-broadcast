@@ -12,7 +12,26 @@
 <body>
 <div class="wrap"><div class="stage" id="stage"><div id="header"></div><div class="scene" id="scene"></div><div class="lowerThird" id="lowerThird"><div class="lowerBox"><b id="lowerTitle"></b><div id="lowerSub"></div></div></div><div class="cueLayer" id="cue"><div class="cueBox"><h1 id="cueTitle"></h1><p id="cueSub"></p></div></div><div class="footer"><span id="foot">FREQ PRODUCER CHAMPIONSHIP</span><span>#FREQCHAMPS</span></div></div></div>
 <script>
-const API='https://ahidmhrotfetcxdwoxmn.supabase.co/functions/v1/freq-live?api=state';let state=null,lastCue=0,lastScene='',lastSignature='';const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;');const bg=p=>p?.image?'style="background-image:url(\''+String(p.image).replaceAll("'","")+'\')"':'';
+const API='https://ahidmhrotfetcxdwoxmn.supabase.co/functions/v1/freq-live?api=state';
+const SOUND_ENABLED=new URLSearchParams(location.search).get('sound')!=='0';
+const SOUND_VOLUME=Math.max(0,Math.min(1,Number(new URLSearchParams(location.search).get('volume')||0.72)));
+const sounds={
+  transition:new Audio('./audio/transition.wav'),
+  judges:new Audio('./audio/judges.wav'),
+  scores:new Audio('./audio/scores.wav'),
+  finals:new Audio('./audio/finals.wav'),
+  cue:new Audio('./audio/cue.wav'),
+  intro:new Audio('./audio/intro.wav')
+};
+Object.values(sounds).forEach(a=>{a.preload='auto';a.volume=SOUND_VOLUME});
+let audioPrimed=false;
+function playSound(name){
+  if(!SOUND_ENABLED||!audioPrimed)return;
+  const a=sounds[name]||sounds.transition;
+  try{a.pause();a.currentTime=0;a.volume=SOUND_VOLUME;const p=a.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}
+}
+addEventListener('pointerdown',()=>{audioPrimed=true;Object.values(sounds).forEach(a=>{try{a.load()}catch(e){}})},{once:true});
+let state=null,lastCue=0,lastScene='',lastSignature='';const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;');const bg=p=>p?.image?'style="background-image:url(\''+String(p.image).replaceAll("'","")+'\')"':'';
 function timer(s){const t=s.timer||{};let r=Number(t.remainingSeconds||0);if(t.running&&t.startedAt)r-=Math.max(0,(Date.now()-new Date(t.startedAt).getTime())/1000);r=Math.max(0,Math.ceil(r));return String(Math.floor(r/60)).padStart(2,'0')+':'+String(r%60).padStart(2,'0')}
 function header(s){return '<div class="top"><div class="logo">FR<i>E</i>Q</div><div class="round"><b>'+esc(s.round)+'</b><span>|</span><span>'+esc(s.phase)+'</span></div><div class="present">PRESENTED BY <strong>'+esc(s.presentedBy)+'</strong></div></div>'}
 function full(s){const cs=s.contestants||[],js=s.judges||[],lb=s.leaderboard||[],chat=s.chat||[];return '<div class="grid"><section class="panel host"><div class="title"><span>HOST</span></div><div class="photo" '+bg(s.host)+'></div><div class="meta"><b>'+esc(s.host?.name)+'</b><div class="muted">'+esc(s.host?.handle)+'</div></div></section><section class="panel challenge"><div class="muted">CHALLENGE</div><h1>'+esc(s.challengeTitle)+'</h1><p>'+esc(s.challengeDescription)+'</p><div class="metrics"><div class="metric"><small>BPM</small><strong>'+esc(s.bpm)+'</strong></div><div class="metric"><small>KEY</small><strong>'+esc(s.key)+'</strong></div><div class="metric"><small>TIME</small><strong data-time>'+timer(s)+'</strong></div></div></section><section class="panel contestants"><div class="title"><span>CONTESTANTS</span></div><div class="cards">'+cs.slice(0,4).map(c=>'<div class="c"><div class="photo" '+bg(c)+'></div><div class="meta"><b>'+esc(c.name)+'</b><div class="muted">'+esc(c.handle)+'</div><div class="status">'+esc(c.status)+'</div></div></div>').join('')+'</div></section><section class="panel judges"><div class="title"><span>JUDGES</span></div><div class="judgeGrid">'+js.slice(0,4).map(j=>'<div class="j"><div class="photo" '+bg(j)+'></div><div class="score">'+(j.score==null?'--':Number(j.score).toFixed(1))+'</div><div class="jname">'+esc(j.name)+'</div></div>').join('')+'</div></section><section class="side"><div class="panel up"><div class="title">UP NEXT</div><h2>'+esc(s.upNext?.name||'TBD')+'</h2><div class="muted">'+esc(s.upNext?.handle||'')+'</div><div class="bigtime" style="font-size:30px">00:'+String(s.upNext?.countdown||0).padStart(2,'0')+'</div></div><div class="panel chat"><div class="title">LIVE CHAT</div>'+chat.slice(0,7).map(x=>'<div class="chatrow"><b>'+esc(x.user)+'</b>'+esc(x.message)+'</div>').join('')+'</div></section><section class="panel bottom"><div class="title">LEADERBOARD</div><div class="lb">'+lb.slice(0,5).map(x=>'<span>'+esc(x.rank)+'</span><span>'+esc(x.name)+'</span><span>'+(x.score==null?'--':Number(x.score).toFixed(1))+'</span>').join('')+'</div></section></div>'}
@@ -26,8 +45,19 @@ function special(s,t){return '<div class="center"><div class="special"><div clas
 function sceneHTML(s,sc){if(sc==='full')return full(s);if(sc==='host')return hostScene(s);if(sc.startsWith('contestant'))return contestantScene(s);if(sc==='judges')return judgesScene(s);if(sc==='scores')return scores(s);if(sc==='upnext')return upnext(s);if(sc==='break')return special(s,'WE’LL BE RIGHT BACK');if(sc==='finals')return special(s,'FINALS');return full(s)}
 function signature(s){const x=JSON.parse(JSON.stringify(s));if(x.timer){delete x.timer.startedAt}return JSON.stringify(x)}
 function renderLowerThird(s){const lt=s.lowerThird||{},n=document.getElementById('lowerThird');document.getElementById('lowerTitle').textContent=lt.title||'';document.getElementById('lowerSub').textContent=lt.subtitle||'';n.classList.toggle('show',!!lt.visible)}
-function draw(s){state=s;document.getElementById('header').innerHTML=header(s);document.getElementById('foot').textContent=(s.eventTitle||'FREQ PRODUCER CHAMPIONSHIP')+' • '+(s.season||'SEASON 1');renderLowerThird(s);const sc=s.scene||'full',sig=signature(s),node=document.getElementById('scene');if(sc!==lastScene){node.classList.remove('scene-in','soft-refresh');node.classList.add('scene-out');setTimeout(()=>{node.innerHTML=sceneHTML(s,sc);node.classList.remove('scene-out');void node.offsetWidth;node.classList.add('scene-in')},170);lastScene=sc;lastSignature=sig}else if(sig!==lastSignature){node.innerHTML=sceneHTML(s,sc);node.classList.remove('soft-refresh');void node.offsetWidth;node.classList.add('soft-refresh');lastSignature=sig}const c=s.cue||{};if(Number(c.nonce||0)!==lastCue){lastCue=Number(c.nonce||0);if(c.type&&c.type!=='none')fire(c.type)}}
-function fire(t){const map={round_start:['ROUND START','FREQ PRODUCER CHAMPIONSHIP'],contestant:['NEXT PRODUCER','NOW PLAYING'],scores_locked:['SCORES LOCKED','JUDGES HAVE SPOKEN'],timeup:["TIME'S UP",'LOCK YOUR PROJECT'],finals:['FINALS','THE LAST FLIP']},x=map[t]||[String(t).toUpperCase(),'FREQ'];document.getElementById('cueTitle').textContent=x[0];document.getElementById('cueSub').textContent=x[1];const n=document.getElementById('cue');n.classList.remove('go');void n.offsetWidth;n.classList.add('go')}
+function draw(s){state=s;document.getElementById('header').innerHTML=header(s);document.getElementById('foot').textContent=(s.eventTitle||'FREQ PRODUCER CHAMPIONSHIP')+' • '+(s.season||'SEASON 1');renderLowerThird(s);const sc=s.scene||'full',sig=signature(s),node=document.getElementById('scene');if(sc!==lastScene){
+  if(lastScene){
+    const sceneSound=sc==='judges'?'judges':sc==='scores'?'scores':sc==='finals'?'finals':sc==='intro'?'intro':'transition';
+    playSound(sceneSound);
+  }
+  node.classList.remove('scene-in','soft-refresh');node.classList.add('scene-out');
+  setTimeout(()=>{node.innerHTML=sceneHTML(s,sc);node.classList.remove('scene-out');void node.offsetWidth;node.classList.add('scene-in')},170);
+  lastScene=sc;lastSignature=sig;
+  if(!audioPrimed)audioPrimed=true
+}else if(sig!==lastSignature){node.innerHTML=sceneHTML(s,sc);node.classList.remove('soft-refresh');void node.offsetWidth;node.classList.add('soft-refresh');lastSignature=sig}const c=s.cue||{};if(Number(c.nonce||0)!==lastCue){lastCue=Number(c.nonce||0);if(c.type&&c.type!=='none')fire(c.type)}}
+function fire(t){
+  const snd=t==='scores_locked'?'scores':t==='finals'?'finals':'cue';playSound(snd);
+  const map={round_start:['ROUND START','FREQ PRODUCER CHAMPIONSHIP'],contestant:['NEXT PRODUCER','NOW PLAYING'],scores_locked:['SCORES LOCKED','JUDGES HAVE SPOKEN'],timeup:["TIME'S UP",'LOCK YOUR PROJECT'],finals:['FINALS','THE LAST FLIP']},x=map[t]||[String(t).toUpperCase(),'FREQ'];document.getElementById('cueTitle').textContent=x[0];document.getElementById('cueSub').textContent=x[1];const n=document.getElementById('cue');n.classList.remove('go');void n.offsetWidth;n.classList.add('go')}
 function tick(){if(!state)return;document.querySelectorAll('[data-time]').forEach(n=>n.textContent=timer(state))}
 function scale(){const s=document.getElementById('stage'),k=Math.min(innerWidth/1920,innerHeight/1080);s.style.transform='scale('+k+')'}
 addEventListener('resize',scale);scale();
