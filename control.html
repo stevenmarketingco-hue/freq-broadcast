@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREQ Producer Console • v7</title>
+<title>FREQ Producer Console • v8</title>
 <style>
 :root{
   --bg:#06070a;--panel:#0e1117;--panel2:#121620;--line:#252b38;--line2:#30384a;
@@ -76,7 +76,7 @@ button:active{transform:translateY(0)}
 .resultControl strong{font-size:13px}.resultControl .muted{margin-top:4px}
 .bracketEditor{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 @media(max-width:900px){.bracketEditor{grid-template-columns:1fr 1fr}}.row{display:grid;grid-template-columns:50px 1.2fr 1.2fr 1fr 90px 86px;gap:7px;align-items:center;padding:8px;border:1px solid #262d39;background:#0d1016;border-radius:10px}
-.judge{grid-template-columns:50px 1fr 100px}.rank{display:grid;grid-template-columns:70px 1fr 120px;gap:7px;margin-bottom:7px}
+.judge{grid-template-columns:50px 1fr 100px 112px}.rank{display:grid;grid-template-columns:70px 1fr 120px;gap:7px;margin-bottom:7px}
 .toggleRow{display:flex;align-items:center;gap:10px}.toggle{appearance:none;width:42px;height:24px;border-radius:999px;background:#242a36;border:1px solid #343b49;position:relative;cursor:pointer}.toggle:after{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;border-radius:50%;background:#7e8798;transition:.18s}.toggle:checked{background:#4458d7;border-color:#6678ff}.toggle:checked:after{left:20px;background:white}
 @media(max-width:1100px){.layout{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid #202531}.switch{grid-template-columns:repeat(3,1fr)}.introPanel{grid-template-columns:1fr}}
 @media(max-width:720px){.main{padding:10px}.grid2,.grid3{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr}.timer{grid-template-columns:1fr}.readout{font-size:44px}.switch,.cueGrid{grid-template-columns:1fr 1fr}.topR a{display:none}.heroBar{grid-template-columns:1fr}.heroActions{flex-wrap:wrap}}
@@ -121,7 +121,7 @@ button:active{transform:translateY(0)}
 
 <section class="card"><div class="head"><div><div class="eyebrow">PROGRAM</div><h2>LIVE SWITCHER</h2></div><span class="muted">Scene takes are immediate</span></div><div class="body"><div id="switcher" class="switch"></div></div></section>
 
-<section class="card"><div class="head"><div><div class="eyebrow">PRE-SHOW</div><h2>INTRO SCENE</h2></div><div class="actions"><button id="testIntroAudio" class="ghost">TEST INTRO SOUND</button><button id="testTransitionAudio" class="ghost">TEST TRANSITION</button><button id="takeIntro" class="primary">TAKE INTRO LIVE</button></div></div>
+<section class="card"><div class="head"><div><div class="eyebrow">PRE-SHOW</div><h2>INTRO SCENE</h2></div><div class="actions"><button id="takeIntro" class="primary">TAKE INTRO LIVE</button></div></div>
 <div class="body introPanel">
   <div id="introFields" class="grid2"></div>
   <div class="introPreview"><div class="k" id="prevKicker">LIVE BROADCAST</div><h3 id="prevTitle">STREAM<br><span>STARTING SOON</span></h3><div class="sub" id="prevSub">FREQ PRODUCER CHAMPIONSHIP</div><div class="detail" id="prevDetail">TOP 8 BATTLES • SEASON 1</div></div>
@@ -319,11 +319,19 @@ const camPeople=[
 el('cameraFields').innerHTML='<div class="cameraRows">'+camPeople.map(x=>'<div class="cameraRow"><b>'+esc(x[0])+'</b><input class="small" data-path="'+x[1]+'" placeholder="https://vdo.ninja/?view=..." value="'+esc(get(x[1]))+'"></div>').join('')+'</div><div class="cameraHint">Paste the VDO.Ninja SOLO VIEW / VIEWER link — not the guest invite link. Example: https://vdo.ninja/?view=STREAMID. The overlay automatically adds clean output, transparency, autoplay, and video-only mode.</div>';
 
 el('contestants').innerHTML=(draft.contestants||[]).map((c,i)=>'<div class="row"><span class="muted">#'+String(i+1).padStart(2,'0')+'</span><input class="small" data-ci="'+i+'" data-k="name" value="'+esc(c.name)+'"><input class="small" data-ci="'+i+'" data-k="handle" value="'+esc(c.handle)+'"><select class="small" data-ci="'+i+'" data-k="status"><option '+(c.status==='IN PROGRESS'?'selected':'')+'>IN PROGRESS</option><option '+(c.status==='WAITING'?'selected':'')+'>WAITING</option><option '+(c.status==='DONE'?'selected':'')+'>DONE</option><option '+(c.status==='ELIMINATED'?'selected':'')+'>ELIMINATED</option></select><input class="small" type="number" step=".1" data-ci="'+i+'" data-k="score" value="'+(c.score??'')+'"><button class="ghost" data-focus="'+(i+1)+'">FOCUS</button></div>').join('');
-el('judges').innerHTML=(draft.judges||[]).map((j,i)=>'<div class="row judge"><span class="muted">'+(i+1)+'</span><input class="small" data-ji="'+i+'" data-k="name" value="'+esc(j.name)+'"><input class="small" type="number" step=".1" min="0" max="10" data-ji="'+i+'" data-k="score" value="'+(j.score??'')+'"></div>').join('');
+el('judges').innerHTML=(draft.judges||[]).map((j,i)=>'<div class="row judge"><span class="muted">'+(i+1)+'</span><input class="small" data-ji="'+i+'" data-k="name" value="'+esc(j.name)+'"><input id="judgeScore'+i+'" class="small" type="number" step=".1" min="0" max="10" data-judge-score-input="'+i+'" value="'+(j.score??'')+'"><button class="ghost" data-judge-score-save="'+i+'">UPDATE SCORE</button></div>').join('');
 el('leaderboard').innerHTML=(draft.leaderboard||[]).map((x,i)=>'<div class="rank"><input class="small" type="number" data-li="'+i+'" data-k="rank" value="'+(x.rank||i+1)+'"><input class="small" data-li="'+i+'" data-k="name" value="'+esc(x.name)+'"><input class="small" type="number" step=".1" data-li="'+i+'" data-k="score" value="'+(x.score??'')+'"></div>').join('');
 el('ltTitle').value=draft.lowerThird.title||'';el('ltSub').value=draft.lowerThird.subtitle||'';el('ltVisible').checked=!!draft.lowerThird.visible;preview();bind()}
 function preview(){if(!draft)return;el('prevKicker').textContent=draft.intro?.kicker||'LIVE BROADCAST';const title=draft.intro?.title||'STREAM STARTING SOON';const words=title.split(' ');if(words.length>1){el('prevTitle').innerHTML=esc(words[0])+'<br><span>'+esc(words.slice(1).join(' '))+'</span>'}else el('prevTitle').textContent=title;el('prevSub').textContent=draft.intro?.subtitle||'';el('prevDetail').textContent=draft.intro?.detail||''}
-function bind(){document.querySelectorAll('[data-path]').forEach(n=>n.oninput=()=>{setp(n.dataset.path,n.type==='number'&&n.value!==''?Number(n.value):n.value);if(n.dataset.path.startsWith('intro.'))preview()});document.querySelectorAll('[data-scene]').forEach(n=>n.onclick=()=>take(n.dataset.scene));document.querySelectorAll('[data-focus]').forEach(n=>n.onclick=()=>focus(Number(n.dataset.focus)));document.querySelectorAll('[data-ci]').forEach(n=>n.oninput=()=>{draft.contestants[+n.dataset.ci][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-ji]').forEach(n=>n.oninput=()=>{draft.judges[+n.dataset.ji][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});document.querySelectorAll('[data-li]').forEach(n=>n.oninput=()=>{draft.leaderboard[+n.dataset.li][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()})}
+function bind(){
+  document.querySelectorAll('[data-path]').forEach(n=>n.oninput=()=>{setp(n.dataset.path,n.type==='number'&&n.value!==''?Number(n.value):n.value);if(n.dataset.path.startsWith('intro.'))preview()});
+  document.querySelectorAll('[data-scene]').forEach(n=>n.onclick=()=>take(n.dataset.scene));
+  document.querySelectorAll('[data-focus]').forEach(n=>n.onclick=()=>focus(Number(n.dataset.focus)));
+  document.querySelectorAll('[data-ci]').forEach(n=>n.oninput=()=>{draft.contestants[+n.dataset.ci][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()});
+  document.querySelectorAll('[data-ji]').forEach(n=>n.oninput=()=>{draft.judges[+n.dataset.ji][n.dataset.k]=n.value;mark()});
+  document.querySelectorAll('[data-judge-score-save]').forEach(n=>n.onclick=()=>updateJudgeScore(Number(n.dataset.judgeScoreSave),n));
+  document.querySelectorAll('[data-li]').forEach(n=>n.oninput=()=>{draft.leaderboard[+n.dataset.li][n.dataset.k]=n.type==='number'?(n.value===''?null:+n.value):n.value;mark()})
+}
 
 function scSetStatus(msg,kind=''){const n=el('scStatus');if(!n)return;n.textContent=msg;n.className='scStatus '+kind}
 async function loadSoundCloud(){
@@ -379,6 +387,31 @@ function autoFillBracket(){
   draft.bracketData.champion=lb[0]||draft.winner?.name||'TBD';
   mark();render()
 }
+async function updateJudgeScore(i,btn){
+  const input=el('judgeScore'+i);
+  if(!input)return;
+  const value=input.value===''?null:Number(input.value);
+  if(value!==null&&(Number.isNaN(value)||value<0||value>10)){alert('Judge score must be between 0 and 10.');return}
+  const original=btn?.textContent||'UPDATE SCORE';
+  if(btn){btn.disabled=true;btn.textContent='UPDATING…'}
+  try{
+    const latest=ensureDefaults(await state());
+    latest.judges??=[];
+    latest.judges[i]??={name:'JUDGE '+(i+1),score:null};
+    latest.judges[i].score=value;
+    await api({action:'update',state:latest});
+    live=clone(latest);
+    if(draft?.judges?.[i])draft.judges[i].score=value;
+    input.value=value??'';
+    if(btn){
+      btn.textContent='UPDATED ✓';
+      setTimeout(()=>{btn.textContent=original;btn.disabled=false},900)
+    }
+  }catch(e){
+    if(btn){btn.textContent=original;btn.disabled=false}
+    alert(e.message||'Could not update judge score.')
+  }
+}
 async function push(s=draft){ensureDefaults(s);await api({action:'update',state:s});live=clone(s);draft=clone(s);saved();render()}
 async function take(sc){
   const s=clone(live);ensureDefaults(s);s.scene=sc;
@@ -431,8 +464,6 @@ el('syncWinner').onclick=()=>syncWinnerFromLeaderboard();
 el('autoBracket').onclick=()=>autoFillBracket();
 el('goFull').onclick=()=>take('full');el('takeHost').onclick=()=>take('host');el('takeUpNext').onclick=()=>take('upnext');
 el('upNextStart').onclick=()=>upNextTimer('start');el('upNextPause').onclick=()=>upNextTimer('pause');el('upNextReset').onclick=()=>upNextTimer('reset');el('upNextMinus').onclick=()=>upNextTimer('minus');el('upNextPlus').onclick=()=>upNextTimer('plus');
-el('testIntroAudio').onclick=()=>cue('audio_test_intro');
-el('testTransitionAudio').onclick=()=>cue('audio_test_transition');
 if(el('scUrl'))el('scUrl').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();loadSoundCloud()}};
 el('start').onclick=()=>timer('start');el('pause').onclick=()=>timer('pause');el('reset').onclick=()=>timer('reset');el('minus').onclick=()=>timer('minus');el('plus').onclick=()=>timer('plus');
 document.querySelectorAll('[data-cue]').forEach(n=>n.onclick=()=>cue(n.dataset.cue));
