@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FREQ Producer Console • v4</title>
+<title>FREQ Producer Console • v5</title>
 <style>
 :root{
   --bg:#06070a;--panel:#0e1117;--panel2:#121620;--line:#252b38;--line2:#30384a;
@@ -127,8 +127,23 @@ button:active{transform:translateY(0)}
 <section class="card"><div class="head"><div><div class="eyebrow">CLOCK</div><h2>MASTER TIMER</h2></div><span id="timerState" class="muted">PAUSED</span></div><div class="body"><div class="timer"><div id="clock" class="readout">20:00</div><div class="actions"><button id="start" class="primary">START</button><button id="pause" class="ghost">PAUSE</button><button id="reset" class="ghost">RESET 20:00</button><button id="minus" class="ghost">−30s</button><button id="plus" class="ghost">+30s</button></div></div></div></section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">EVENT</div><h2>SHOW INFO</h2></div></div><div id="showFields" class="body grid3"></div></section>
-<section class="card"><div class="head"><div><div class="eyebrow">QUEUE</div><h2>UP NEXT</h2></div><button id="takeUpNext" class="ghost">TAKE UP NEXT SCENE</button></div>
-<div class="body grid3" id="upNextFields"></div></section>
+<section class="card"><div class="head"><div><div class="eyebrow">PRESENTER</div><h2>HOST</h2></div><button id="takeHost" class="ghost">TAKE HOST SOLO</button></div>
+<div class="body grid3" id="hostFields"></div></section>
+
+<section class="card"><div class="head"><div><div class="eyebrow">QUEUE</div><h2>UP NEXT</h2></div><div class="actions"><span id="upNextTimerState" class="muted">PAUSED</span><button id="takeUpNext" class="ghost">TAKE UP NEXT SCENE</button></div></div>
+<div class="body">
+  <div class="grid3" id="upNextFields"></div>
+  <div class="timer" style="margin-top:14px;padding-top:14px;border-top:1px solid #252b37">
+    <div id="upNextClock" class="readout" style="font-size:42px">00:45</div>
+    <div class="actions">
+      <button id="upNextStart" class="primary">START COUNTDOWN</button>
+      <button id="upNextPause" class="ghost">PAUSE</button>
+      <button id="upNextReset" class="ghost">RESET</button>
+      <button id="upNextMinus" class="ghost">−5s</button>
+      <button id="upNextPlus" class="ghost">+5s</button>
+    </div>
+  </div>
+</div></section>
 
 <section class="card"><div class="head"><div><div class="eyebrow">REMOTE VIDEO</div><h2>CAMERA FEEDS</h2></div><span class="muted">Paste a VDO.Ninja viewer URL for each person</span></div>
 <div class="body" id="cameraFields"></div></section>
@@ -151,7 +166,18 @@ let token=localStorage.getItem('freq_token')||'',live=null,draft=null;
 const el=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x));
 async function api(body){const h={'Content-Type':'application/json'};if(token)h.Authorization='Bearer '+token;const r=await fetch(API,{method:'POST',headers:h,body:JSON.stringify(body)});const d=await r.json().catch(()=>({error:'Request failed'}));if(!r.ok)throw new Error(d.error||'Request failed');return d}
 async function state(){const r=await fetch(API+'?api=state',{cache:'no-store'}),d=await r.json();if(!r.ok)throw new Error(d.error||'Could not load state');return d.state}
-function ensureDefaults(s){s.intro??={};s.intro.kicker??='LIVE BROADCAST';s.intro.title??='STREAM STARTING SOON';s.intro.subtitle??='FREQ PRODUCER CHAMPIONSHIP';s.intro.detail??='TOP 8 BATTLES • SEASON 1';s.lowerThird??={title:'DREXIS',subtitle:'HOST',visible:false};return s}
+function ensureDefaults(s){
+  s.intro??={};s.intro.kicker??='LIVE BROADCAST';s.intro.title??='STREAM STARTING SOON';s.intro.subtitle??='FREQ PRODUCER CHAMPIONSHIP';s.intro.detail??='TOP 8 BATTLES • SEASON 1';
+  s.lowerThird??={title:'DREXIS',subtitle:'HOST',visible:false};
+  s.host??={};s.host.name??='HOST';s.host.handle??='';s.host.image??='';s.host.camUrl??='';
+  s.upNext??={};
+  const legacy=Math.max(0,Number(s.upNext.countdown??45)||0);
+  if(s.upNext.durationSeconds==null)s.upNext.durationSeconds=legacy;
+  if(s.upNext.remainingSeconds==null)s.upNext.remainingSeconds=legacy;
+  if(s.upNext.running==null)s.upNext.running=false;
+  if(s.upNext.startedAt===undefined)s.upNext.startedAt=null;
+  return s
+}
 function get(p){return p.split('.').reduce((a,k)=>a&&a[k],draft)}
 function setp(p,v){const a=p.split('.');let x=draft;for(let i=0;i<a.length-1;i++){x[a[i]]??={};x=x[a[i]]}x[a.at(-1)]=v;mark()}
 function mark(){el('saveStatus').textContent='STAGED';el('saveStatus').className='status staged'}
@@ -160,16 +186,27 @@ function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('"','&qu
 function field(l,p,t='text'){return '<div class="field"><label>'+l+'</label><input data-path="'+p+'" type="'+t+'" value="'+esc(get(p))+'"></div>'}
 function effective(){const t=live?.timer||{};let r=Number(t.remainingSeconds||0);if(t.running&&t.startedAt)r-=Math.max(0,(Date.now()-new Date(t.startedAt).getTime())/1000);return Math.max(0,r)}
 function tt(x){x=Math.max(0,Math.ceil(x));return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}
+function effectiveUpNext(s=live){
+  const u=s?.upNext||{};let r=Number(u.remainingSeconds??u.durationSeconds??u.countdown??0);
+  if(u.running&&u.startedAt)r-=Math.max(0,(Date.now()-new Date(u.startedAt).getTime())/1000);
+  return Math.max(0,r)
+}
 function render(){if(!draft)return;ensureDefaults(draft);ensureDefaults(live);const cur=live.scene||'full';el('programLabel').textContent=(draft.eventTitle||'FREQ PRODUCER CHAMPIONSHIP');el('sceneChip').textContent='SCENE: '+String(cur).replaceAll('_',' ').toUpperCase();
 el('sideScenes').innerHTML=scenes.map((x,i)=>'<button class="sceneBtn '+(cur===x[0]?'on ':'')+(x[0]==='intro'?'introBtn':'')+'" data-scene="'+x[0]+'"><span class="num">'+String(i+1).padStart(2,'0')+'</span><span>'+x[1]+'</span><span class="sceneTag">'+(cur===x[0]?'LIVE':'TAKE')+'</span></button>').join('');
 el('switcher').innerHTML=scenes.map(x=>'<button class="take '+(cur===x[0]?'on ':'')+(x[0]==='intro'?'intro':'')+'" data-scene="'+x[0]+'">'+x[1]+'</button>').join('');
 el('introFields').innerHTML=field('KICKER','intro.kicker')+field('HEADLINE','intro.title')+field('SUBTITLE','intro.subtitle')+field('DETAIL LINE','intro.detail');
 el('showFields').innerHTML=field('EVENT TITLE','eventTitle')+field('SEASON','season')+field('PRESENTED BY','presentedBy')+field('ROUND','round')+field('PHASE','phase')+field('CHALLENGE','challengeTitle')+field('DESCRIPTION','challengeDescription')+field('BPM','bpm','number')+field('KEY','key')+field('SAMPLE PACK','samplePack')+field('SAMPLE BY','sampleBy')+field('BRACKET','bracket');
+el('hostFields').innerHTML=
+  field('HOST NAME','host.name')+
+  field('HOST HANDLE','host.handle')+
+  field('HOST IMAGE URL','host.image')+
+  field('HOST CAMERA URL','host.camUrl');
+
 el('upNextFields').innerHTML=
   field('SLOT','upNext.slot')+
   field('NAME','upNext.name')+
   field('HANDLE','upNext.handle')+
-  field('COUNTDOWN (SEC)','upNext.countdown','number')+
+  field('RESET COUNTDOWN (SEC)','upNext.durationSeconds','number')+
   field('IMAGE URL','upNext.image')+
   field('CAMERA URL','upNext.camUrl');
 
@@ -178,7 +215,7 @@ const camPeople=[
   ...((draft.contestants||[]).map((c,i)=>['CONTESTANT '+(i+1)+' — '+(c.name||'TBD'),'contestants.'+i+'.camUrl'])),
   ...((draft.judges||[]).map((j,i)=>['JUDGE '+(i+1)+' — '+(j.name||'TBD'),'judges.'+i+'.camUrl']))
 ];
-el('cameraFields').innerHTML='<div class="cameraRows">'+camPeople.map(x=>'<div class="cameraRow"><b>'+esc(x[0])+'</b><input class="small" data-path="'+x[1]+'" placeholder="https://vdo.ninja/?view=..." value="'+esc(get(x[1]))+'"></div>').join('')+'</div><div class="cameraHint">Use viewer-only links. Camera audio is intentionally muted inside the graphic; route speaking audio separately in OBS/Discord if you want independent control.</div>';
+el('cameraFields').innerHTML='<div class="cameraRows">'+camPeople.map(x=>'<div class="cameraRow"><b>'+esc(x[0])+'</b><input class="small" data-path="'+x[1]+'" placeholder="https://vdo.ninja/?view=..." value="'+esc(get(x[1]))+'"></div>').join('')+'</div><div class="cameraHint">Paste the VDO.Ninja SOLO VIEW / VIEWER link — not the guest invite link. Example: https://vdo.ninja/?view=STREAMID. The overlay automatically adds clean output, transparency, autoplay, and video-only mode.</div>';
 
 el('contestants').innerHTML=(draft.contestants||[]).map((c,i)=>'<div class="row"><span class="muted">#'+String(i+1).padStart(2,'0')+'</span><input class="small" data-ci="'+i+'" data-k="name" value="'+esc(c.name)+'"><input class="small" data-ci="'+i+'" data-k="handle" value="'+esc(c.handle)+'"><select class="small" data-ci="'+i+'" data-k="status"><option '+(c.status==='IN PROGRESS'?'selected':'')+'>IN PROGRESS</option><option '+(c.status==='WAITING'?'selected':'')+'>WAITING</option><option '+(c.status==='DONE'?'selected':'')+'>DONE</option><option '+(c.status==='ELIMINATED'?'selected':'')+'>ELIMINATED</option></select><input class="small" type="number" step=".1" data-ci="'+i+'" data-k="score" value="'+(c.score??'')+'"><button class="ghost" data-focus="'+(i+1)+'">FOCUS</button></div>').join('');
 el('judges').innerHTML=(draft.judges||[]).map((j,i)=>'<div class="row judge"><span class="muted">'+(i+1)+'</span><input class="small" data-ji="'+i+'" data-k="name" value="'+esc(j.name)+'"><input class="small" type="number" step=".1" min="0" max="10" data-ji="'+i+'" data-k="score" value="'+(j.score??'')+'"></div>').join('');
@@ -203,13 +240,29 @@ async function take(sc){
 async function focus(i){const s=clone(live);s.scene='contestant'+i;s.activeContestant=i;s.cue={type:'contestant',nonce:Number(s.cue?.nonce||0)+1};await push(s)}
 async function cue(t){const s=clone(live);s.cue={type:t,nonce:Number(s.cue?.nonce||0)+1};await push(s)}
 async function timer(a){const s=clone(live),t=s.timer||{durationSeconds:1200,remainingSeconds:1200,running:false,startedAt:null},r=effective();if(a==='start'&&!t.running){t.remainingSeconds=r;t.startedAt=new Date().toISOString();t.running=true}else if(a==='pause'){t.remainingSeconds=r;t.startedAt=null;t.running=false}else if(a==='reset'){t.durationSeconds=1200;t.remainingSeconds=1200;t.startedAt=null;t.running=false}else if(a==='plus'){t.remainingSeconds=r+30;t.startedAt=t.running?new Date().toISOString():null}else if(a==='minus'){t.remainingSeconds=Math.max(0,r-30);t.startedAt=t.running?new Date().toISOString():null}s.timer=t;await push(s)}
-function tick(){if(!live)return;el('clock').textContent=tt(effective());el('timerState').textContent=live.timer?.running?'RUNNING':'PAUSED'}
+async function upNextTimer(a){
+  const s=clone(live);ensureDefaults(s);const u=s.upNext,r=effectiveUpNext(s);
+  if(a==='start'&&!u.running){u.remainingSeconds=r;u.startedAt=new Date().toISOString();u.running=true}
+  else if(a==='pause'){u.remainingSeconds=r;u.startedAt=null;u.running=false}
+  else if(a==='reset'){u.remainingSeconds=Math.max(0,Number(draft?.upNext?.durationSeconds??u.durationSeconds??45));u.durationSeconds=u.remainingSeconds;u.startedAt=null;u.running=false}
+  else if(a==='plus'){u.remainingSeconds=r+5;u.startedAt=u.running?new Date().toISOString():null}
+  else if(a==='minus'){u.remainingSeconds=Math.max(0,r-5);u.startedAt=u.running?new Date().toISOString():null}
+  u.countdown=Math.ceil(u.remainingSeconds);
+  await push(s)
+}
+function tick(){
+  if(!live)return;
+  el('clock').textContent=tt(effective());el('timerState').textContent=live.timer?.running?'RUNNING':'PAUSED';
+  const u=effectiveUpNext();if(el('upNextClock'))el('upNextClock').textContent=tt(u);
+  if(el('upNextTimerState'))el('upNextTimerState').textContent=live.upNext?.running?'RUNNING':'PAUSED'
+}
 el('loginForm').onsubmit=async e=>{e.preventDefault();el('loginErr').textContent='';try{const d=await api({action:'login',username:el('user').value,password:el('pass').value});token=d.token;localStorage.setItem('freq_token',token);live=ensureDefaults(await state());draft=clone(live);el('loginShell').classList.add('hidden');el('app').classList.remove('hidden');render();saved()}catch(x){el('loginErr').textContent=x.message}};
 el('logout').onclick=async()=>{try{await api({action:'logout'})}catch{}localStorage.removeItem('freq_token');location.reload()};
 el('push').onclick=()=>push().catch(e=>alert(e.message));
 el('goIntro').onclick=()=>take('intro');
 el('takeIntro').onclick=()=>take('intro');
-el('goFull').onclick=()=>take('full');el('takeUpNext').onclick=()=>take('upnext');
+el('goFull').onclick=()=>take('full');el('takeHost').onclick=()=>take('host');el('takeUpNext').onclick=()=>take('upnext');
+el('upNextStart').onclick=()=>upNextTimer('start');el('upNextPause').onclick=()=>upNextTimer('pause');el('upNextReset').onclick=()=>upNextTimer('reset');el('upNextMinus').onclick=()=>upNextTimer('minus');el('upNextPlus').onclick=()=>upNextTimer('plus');
 el('testIntroAudio').onclick=()=>cue('audio_test_intro');
 el('testTransitionAudio').onclick=()=>cue('audio_test_transition');
 el('start').onclick=()=>timer('start');el('pause').onclick=()=>timer('pause');el('reset').onclick=()=>timer('reset');el('minus').onclick=()=>timer('minus');el('plus').onclick=()=>timer('plus');
